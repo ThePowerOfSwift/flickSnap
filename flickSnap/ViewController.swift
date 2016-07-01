@@ -8,20 +8,20 @@
 
 import UIKit
 import CoreMotion
+import AudioToolbox
 
 class ViewController: UIViewController {
 
-    var motionManager:MotionManager!
-    var angleLabel:UILabel!
-    var magnitudeLabel:UILabel!
+    var motionManager:MotionManager = MotionManager()
+    var angleLabel:UILabel = UILabel()
+    var magnitudeLabel:UILabel = UILabel()
     var initialAttitude:CMAttitude?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         view.backgroundColor = UIColor.whiteColor()
-        
-        angleLabel = UILabel()
+
         view.addSubview(angleLabel)
         angleLabel.translatesAutoresizingMaskIntoConstraints = false
         angleLabel.centerXAnchor.constraintEqualToAnchor(view.centerXAnchor).active = true
@@ -29,7 +29,6 @@ class ViewController: UIViewController {
         angleLabel.intrinsicContentSize()
         angleLabel.text = "angelLabel"
         
-        magnitudeLabel = UILabel()
         view.addSubview(magnitudeLabel)
         magnitudeLabel.translatesAutoresizingMaskIntoConstraints = false
         magnitudeLabel.centerXAnchor.constraintEqualToAnchor(view.centerXAnchor).active = true
@@ -42,8 +41,6 @@ class ViewController: UIViewController {
     }
 
     func processMotion(){
-        self.motionManager = MotionManager()
-        
         motionManager.startDeviceMotionUpdatesToQueue(NSOperationQueue.currentQueue()!) { (deviceMotion, error) in
             if let gravity = deviceMotion?.gravity {
                 let runningAngle = self.handleAccelerationData(dX: gravity.x, dY: gravity.y)
@@ -58,6 +55,7 @@ class ViewController: UIViewController {
                 
                 if runningAngle < 170.0 && runningMagnitude > 0.5 {
                     self.view.backgroundColor = UIColor.greenColor()
+                    AudioServicesPlaySystemSound(kSystemSoundID_Vibrate)
                     print("ready for capture")
                 } else {
                     self.view.backgroundColor = UIColor.whiteColor()
