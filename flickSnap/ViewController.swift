@@ -18,6 +18,10 @@ class ViewController: UIViewController {
     var magnitudeLabel:UILabel = UILabel()
     var initialAttitude:CMAttitude?
     
+    var vibrated:Bool = false
+    
+    var useCamera:Bool = false
+    
     let captureSession = AVCaptureSession()
     let stillImageOutput = AVCaptureStillImageOutput()
     var error: NSError?
@@ -27,30 +31,32 @@ class ViewController: UIViewController {
         // Do any additional setup after loading the view, typically from a nib.
         view.backgroundColor = UIColor.whiteColor()
         
-        let devices = AVCaptureDevice.devices().filter{ $0.hasMediaType(AVMediaTypeVideo) && $0.position == AVCaptureDevicePosition.Front }
-        if let captureDevice = devices.first as? AVCaptureDevice  {
-            
-//            captureSession.addInput(AVCaptureDeviceInput(device: captureDevice, error: &error))
-            do {
-                let input = try AVCaptureDeviceInput(device: captureDevice)
-                captureSession.addInput(input)
-            } catch _ {
-                print("error: \(error?.localizedDescription)")
-            }
-            captureSession.sessionPreset = AVCaptureSessionPresetPhoto
-            captureSession.startRunning()
-            stillImageOutput.outputSettings = [AVVideoCodecKey:AVVideoCodecJPEG]
-            if captureSession.canAddOutput(stillImageOutput) {
-                captureSession.addOutput(stillImageOutput)
-            }
-            if let previewLayer = AVCaptureVideoPreviewLayer(session: captureSession) {
-                previewLayer.bounds = view.bounds
-                previewLayer.position = CGPointMake(view.bounds.midX, view.bounds.midY)
-                previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
-                let cameraPreview = UIView(frame: CGRectMake(0.0, 0.0, view.bounds.size.width, view.bounds.size.height))
-                cameraPreview.layer.addSublayer(previewLayer)
-//                cameraPreview.addGestureRecognizer(UITapGestureRecognizer(target: self, action:"saveToCamera:"))
-                view.addSubview(cameraPreview)
+        if useCamera {
+            let devices = AVCaptureDevice.devices().filter{ $0.hasMediaType(AVMediaTypeVideo) && $0.position == AVCaptureDevicePosition.Front }
+            if let captureDevice = devices.first as? AVCaptureDevice  {
+                
+                //            captureSession.addInput(AVCaptureDeviceInput(device: captureDevice, error: &error))
+                do {
+                    let input = try AVCaptureDeviceInput(device: captureDevice)
+                    captureSession.addInput(input)
+                } catch _ {
+                    print("error: \(error?.localizedDescription)")
+                }
+                captureSession.sessionPreset = AVCaptureSessionPresetPhoto
+                captureSession.startRunning()
+                stillImageOutput.outputSettings = [AVVideoCodecKey:AVVideoCodecJPEG]
+                if captureSession.canAddOutput(stillImageOutput) {
+                    captureSession.addOutput(stillImageOutput)
+                }
+                if let previewLayer = AVCaptureVideoPreviewLayer(session: captureSession) {
+                    previewLayer.bounds = view.bounds
+                    previewLayer.position = CGPointMake(view.bounds.midX, view.bounds.midY)
+                    previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
+                    let cameraPreview = UIView(frame: CGRectMake(0.0, 0.0, view.bounds.size.width, view.bounds.size.height))
+                    cameraPreview.layer.addSublayer(previewLayer)
+                    //                cameraPreview.addGestureRecognizer(UITapGestureRecognizer(target: self, action:"saveToCamera:"))
+                    view.addSubview(cameraPreview)
+                }
             }
         }
         
@@ -97,14 +103,21 @@ class ViewController: UIViewController {
                 
                 if runningAngle < 170.0 && runningMagnitude > 0.5 {
                     self.view.backgroundColor = UIColor.greenColor()
-                    AudioServicesPlaySystemSound(kSystemSoundID_Vibrate)
+                    if !self.vibrated {
+                        AudioServicesPlaySystemSound(kSystemSoundID_Vibrate)
+                        self.vibrated = true
+                    }
                     print("ready for capture")
                 } else {
                     self.view.backgroundColor = UIColor.whiteColor()
-                    if (self.captureSession.running) {
-                        self.saveToCamera()
-                        print("capture")
-                        //Custom capture method.
+                    print("capture")
+                    self.vibrated = false
+                    if self.useCamera {
+                        if (self.captureSession.running) {
+                            self.saveToCamera()
+                            //Custom capture method.
+                        }
+                        
                     }
                 }
             }
