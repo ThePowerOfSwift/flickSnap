@@ -63,19 +63,19 @@ class ViewController: UIViewController {
         }
         
         if useMotion {
-            view.addSubview(angleLabel)
-            angleLabel.translatesAutoresizingMaskIntoConstraints = false
-            angleLabel.centerXAnchor.constraintEqualToAnchor(view.centerXAnchor).active = true
-            angleLabel.centerYAnchor.constraintEqualToAnchor(view.centerYAnchor).active = true
-            angleLabel.intrinsicContentSize()
-            angleLabel.text = "angelLabel"
-            
-            view.addSubview(magnitudeLabel)
-            magnitudeLabel.translatesAutoresizingMaskIntoConstraints = false
-            magnitudeLabel.centerXAnchor.constraintEqualToAnchor(view.centerXAnchor).active = true
-            magnitudeLabel.topAnchor.constraintEqualToAnchor(angleLabel.bottomAnchor, constant: 10).active = true
-            magnitudeLabel.intrinsicContentSize()
-            magnitudeLabel.text = "attitudeLabel"
+//            view.addSubview(angleLabel)
+//            angleLabel.translatesAutoresizingMaskIntoConstraints = false
+//            angleLabel.centerXAnchor.constraintEqualToAnchor(view.centerXAnchor).active = true
+//            angleLabel.centerYAnchor.constraintEqualToAnchor(view.centerYAnchor).active = true
+//            angleLabel.intrinsicContentSize()
+//            angleLabel.text = "angelLabel"
+//            
+//            view.addSubview(magnitudeLabel)
+//            magnitudeLabel.translatesAutoresizingMaskIntoConstraints = false
+//            magnitudeLabel.centerXAnchor.constraintEqualToAnchor(view.centerXAnchor).active = true
+//            magnitudeLabel.topAnchor.constraintEqualToAnchor(angleLabel.bottomAnchor, constant: 10).active = true
+//            magnitudeLabel.intrinsicContentSize()
+//            magnitudeLabel.text = "attitudeLabel"
             
             processMotion()
         }
@@ -138,14 +138,14 @@ class ViewController: UIViewController {
 
     func handleAccelerationData(dX dX:Double, dY: Double) -> Double {
         let testAngle = motionManager.convertCoordToDegrees(a: dX, b: dY)
-        angleLabel.text = "\(abs(testAngle))"
+//        angleLabel.text = "\(abs(testAngle))"
         return abs(testAngle)
     }
     
     func handleAttitudeData(attitude: CMAttitude) -> Double {
         // calculate magnitude of the change from our initial attitude
         let magnitude = self.magnitudeFromAttitude(attitude) ?? 0
-        magnitudeLabel.text = "\(magnitude)"
+//        magnitudeLabel.text = "\(magnitude)"
         return magnitude
     }
 }
