@@ -22,7 +22,7 @@ class ViewController: UIViewController {
     
     var useCamera:Bool = true
     var useMotion:Bool = true
-    var useCapture:Bool = false
+    var useCapture:Bool = true
     
     let captureSession = AVCaptureSession()
     let stillImageOutput = AVCaptureStillImageOutput()
@@ -114,8 +114,9 @@ class ViewController: UIViewController {
                 } else {
                     self.view.backgroundColor = UIColor.whiteColor()
                     print("capture")
-                    self.vibrated = false
-                    if (self.captureSession.running) {
+                    
+                    if self.captureSession.running && self.vibrated {
+                        self.vibrated = false
                         if self.useCapture {
                             self.saveToCamera()
                             //Custom capture method.
