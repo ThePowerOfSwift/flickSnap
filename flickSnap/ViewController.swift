@@ -20,7 +20,9 @@ class ViewController: UIViewController {
     
     var vibrated:Bool = false
     
-    var useCamera:Bool = false
+    var useCamera:Bool = true
+    var useMotion:Bool = true
+    var useCapture:Bool = false
     
     let captureSession = AVCaptureSession()
     let stillImageOutput = AVCaptureStillImageOutput()
@@ -60,22 +62,23 @@ class ViewController: UIViewController {
             }
         }
         
-        view.addSubview(angleLabel)
-        angleLabel.translatesAutoresizingMaskIntoConstraints = false
-        angleLabel.centerXAnchor.constraintEqualToAnchor(view.centerXAnchor).active = true
-        angleLabel.centerYAnchor.constraintEqualToAnchor(view.centerYAnchor).active = true
-        angleLabel.intrinsicContentSize()
-        angleLabel.text = "angelLabel"
-        
-        view.addSubview(magnitudeLabel)
-        magnitudeLabel.translatesAutoresizingMaskIntoConstraints = false
-        magnitudeLabel.centerXAnchor.constraintEqualToAnchor(view.centerXAnchor).active = true
-        magnitudeLabel.topAnchor.constraintEqualToAnchor(angleLabel.bottomAnchor, constant: 10).active = true
-        magnitudeLabel.intrinsicContentSize()
-        magnitudeLabel.text = "attitudeLabel"
-        
-        processMotion()
-        
+        if useMotion {
+            view.addSubview(angleLabel)
+            angleLabel.translatesAutoresizingMaskIntoConstraints = false
+            angleLabel.centerXAnchor.constraintEqualToAnchor(view.centerXAnchor).active = true
+            angleLabel.centerYAnchor.constraintEqualToAnchor(view.centerYAnchor).active = true
+            angleLabel.intrinsicContentSize()
+            angleLabel.text = "angelLabel"
+            
+            view.addSubview(magnitudeLabel)
+            magnitudeLabel.translatesAutoresizingMaskIntoConstraints = false
+            magnitudeLabel.centerXAnchor.constraintEqualToAnchor(view.centerXAnchor).active = true
+            magnitudeLabel.topAnchor.constraintEqualToAnchor(angleLabel.bottomAnchor, constant: 10).active = true
+            magnitudeLabel.intrinsicContentSize()
+            magnitudeLabel.text = "attitudeLabel"
+            
+            processMotion()
+        }
     }
     
     func saveToCamera() {
@@ -112,12 +115,11 @@ class ViewController: UIViewController {
                     self.view.backgroundColor = UIColor.whiteColor()
                     print("capture")
                     self.vibrated = false
-                    if self.useCamera {
-                        if (self.captureSession.running) {
+                    if (self.captureSession.running) {
+                        if self.useCapture {
                             self.saveToCamera()
                             //Custom capture method.
                         }
-                        
                     }
                 }
             }
