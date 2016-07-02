@@ -5,7 +5,7 @@
 - ~~captureAction: take a photo~~
 - ~~postCaptureAction: save it to the photo gallery~~
 
-- instead of saving photos directly to the device; first save them as imageviews and show them as thumbnails on top of preview layer
+- ~~instead of saving photos directly to the device; first save them as imageviews and show them as thumbnails on top of preview layer~~
 - allow user to drag/throw photos off screen to remove that image view 
 - add reset initial core motion attitude button on preview layer
 - add a view all button when user has more than one thumbnail; load collection view to allow preview of images

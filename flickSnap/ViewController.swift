@@ -205,7 +205,6 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
                     self.thumbNails.last?.bottomAnchor.constraintEqualToAnchor(self.thumbNailGallery.bottomAnchor).active = true
                     self.thumbNails.last?.widthAnchor.constraintEqualToAnchor(self.thumbNailGallery.heightAnchor).active = true
                     
-                    print("imageView.frame.origin \(imageView.frame.origin)")
                     //need to somehow detect if adding another image would be cut off the page and instead insert a "view all" option
                     
                     
@@ -260,11 +259,44 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         }
         
         if sender.state == .Ended {
-            //snap back to original spot
-            UIView.animateWithDuration(0.2) { () -> Void in
-                sender.view!.frame.origin = self.initialPosition!
-                self.initialPosition = nil
+            if true {
+                let removedImageIndex = thumbNails.removeObject(sender.view as! UIImageView)
+                print("remove image #\(removedImageIndex!)")
+                sender.view?.removeFromSuperview()
+                
+                //need to reset the leading constraint of the images arranged to the right of the image removed
+                //if new image that takes over the old index is 0 then set its leading constraint to the main view's leading edge otherwise set new image at removed index position to the image to its left
+                //but don't do any constraint updates if removing from the end
+                if removedImageIndex! != thumbNails.count {
+                    if removedImageIndex! == 0 {
+                        //then this image is the first thumbnail
+                        self.thumbNails[removedImageIndex!].leadingAnchor.constraintEqualToAnchor(self.thumbNailGallery.leadingAnchor).active = true
+                    } else {
+                        self.thumbNails[removedImageIndex!].leadingAnchor.constraintEqualToAnchor(self.thumbNails[removedImageIndex! - 1].trailingAnchor, constant: 10).active = true
+                    }
+                }
+                
+            }else {
+                //snap back to original spot
+                UIView.animateWithDuration(0.2) { () -> Void in
+                    sender.view!.frame.origin = self.initialPosition!
+                    self.initialPosition = nil
+                }
             }
         }
+    }
+}
+
+extension Array where Element : Equatable {
+    
+    // Remove first collection element that is equal to the given `object`:
+    mutating func removeObject(object : Generator.Element) -> Int? {
+        if let index = self.indexOf(object) {
+            self.removeAtIndex(index)
+            return index
+        } else {
+            return nil
+        }
+        
     }
 }
