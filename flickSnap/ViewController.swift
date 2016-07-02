@@ -20,7 +20,8 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     
     var vibrated:Bool = false
     var faceDetected:Bool = true
-    var useLabels:Bool = true
+    
+    var useLabels:Bool = false
     
     let captureSession = AVCaptureSession()
     let stillImageOutput = AVCaptureStillImageOutput()
@@ -29,6 +30,9 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     var captureDevice:AVCaptureDevice!
     
     var error: NSError?
+    
+    var thumbNails = [UIImageView]()
+    var thumbNailGallery = UIView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -62,6 +66,9 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
                 cameraPreview.layer.addSublayer(previewLayer)
                 view.addSubview(cameraPreview)
                 self.previewLayer = previewLayer
+                
+                setupThumbnailView()
+                
             }
         }
         
@@ -84,6 +91,18 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         }
         
         processMotion()
+    }
+    
+    func setupThumbnailView(){
+
+        view.addSubview(thumbNailGallery)
+        
+        thumbNailGallery.translatesAutoresizingMaskIntoConstraints = false
+        thumbNailGallery.leadingAnchor.constraintEqualToAnchor(view.leadingAnchor, constant: 10).active = true
+        thumbNailGallery.trailingAnchor.constraintEqualToAnchor(view.trailingAnchor).active = true
+        thumbNailGallery.bottomAnchor.constraintEqualToAnchor(bottomLayoutGuide.topAnchor, constant: -10).active = true
+        thumbNailGallery.heightAnchor.constraintEqualToConstant(100).active = true
+        
     }
     
     func processMotion(){
@@ -164,8 +183,33 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
                         self.captureDevice.focusPointOfInterest = self.previewLayer.captureDevicePointOfInterestForPoint(self.calculateFaceCenter(face.bounds))
                         self.captureDevice.focusMode = .AutoFocus
                     }
+                    
+                    let imageView = UIImageView(image: self.imageFromSampleBuffer(sampleBuffer))
+                    imageView.userInteractionEnabled = true
+                    imageView.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(ViewController.dragImage(_:))))
+                    
+                    
+                    self.thumbNails.append(imageView)
+                    self.thumbNailGallery.addSubview(imageView)
+                    imageView.translatesAutoresizingMaskIntoConstraints = false
+                    
+                    if self.thumbNails.count == 1 {
+                        //then this image is the first thumbnail
+                        self.thumbNails.last?.leadingAnchor.constraintEqualToAnchor(self.thumbNailGallery.leadingAnchor).active = true
+                    } else {
+                        self.thumbNails.last?.leadingAnchor.constraintEqualToAnchor(self.thumbNails[self.thumbNails.count - 2].trailingAnchor, constant: 10).active = true
+                    }
 
-                    UIImageWriteToSavedPhotosAlbum(self.imageFromSampleBuffer(sampleBuffer), nil, nil, nil)
+                    self.thumbNails.last?.topAnchor.constraintEqualToAnchor(self.thumbNailGallery.topAnchor).active = true
+                    self.thumbNails.last?.bottomAnchor.constraintEqualToAnchor(self.thumbNailGallery.bottomAnchor).active = true
+                    self.thumbNails.last?.widthAnchor.constraintEqualToAnchor(self.thumbNailGallery.heightAnchor).active = true
+                    
+                    //need to somehow detect if adding another image would be cut off the page and instead insert a "view all" option
+                    
+                    
+//                    UIImageWriteToSavedPhotosAlbum(self.imageFromSampleBuffer(sampleBuffer), nil, nil, nil)
+                    
+                    
                 }
             }
         }else {
@@ -200,5 +244,16 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         let centerY = bounds.origin.y + bounds.width / 2.0
         
         return CGPoint(x: centerX, y: centerY)
+    }
+    
+    func dragImage(sender: UIPanGestureRecognizer){
+        print("dragging")
+        if sender.state == UIGestureRecognizerState.Began || sender.state == UIGestureRecognizerState.Changed {
+            print("began | changed")
+            let translation = sender.translationInView(self.view)
+            // note: 'view' is optional and need to be unwrapped
+            sender.view!.center = CGPointMake(sender.view!.center.x + translation.x, sender.view!.center.y + translation.y)
+            sender.setTranslation(CGPointMake(0,0), inView: self.view)
+        }
     }
 }
