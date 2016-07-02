@@ -93,7 +93,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
                 deviceMotion?.attitude.multiplyByInverseOfAttitude(self.initialAttitude!)
                 let runningMagnitude = self.handleAttitudeData((deviceMotion?.attitude)!)
                 
-                if runningAngle < 170.0 && runningMagnitude > 0.5 {
+                if runningAngle < 160.0 && runningMagnitude > 0.8 {
                     if !self.vibrated {
                         AudioServicesPlaySystemSound(kSystemSoundID_Vibrate)
                         self.vibrated = true
@@ -152,10 +152,10 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
             
             //save photo
             if vibrated {
+                self.vibrated = false
+                AudioServicesPlaySystemSound(1108)
                 dispatch_async(dispatch_get_main_queue()){
-                    AudioServicesPlaySystemSound(1108)
                     UIImageWriteToSavedPhotosAlbum(self.imageFromSampleBuffer(sampleBuffer), nil, nil, nil)
-                    self.vibrated = false
                 }
             }
         }else {
