@@ -19,7 +19,9 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     var initialAttitude:CMAttitude?
     
     var vibrated:Bool = false
+    var faceDetected:Bool = true 
     var useLabels:Bool = true
+    
     
     let captureSession = AVCaptureSession()
     let stillImageOutput = AVCaptureStillImageOutput()
@@ -93,12 +95,9 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
                 deviceMotion?.attitude.multiplyByInverseOfAttitude(self.initialAttitude!)
                 let runningMagnitude = self.handleAttitudeData((deviceMotion?.attitude)!)
                 
-                if runningAngle < 160.0 && runningMagnitude > 0.8 {
-                    if !self.vibrated {
-                        AudioServicesPlaySystemSound(kSystemSoundID_Vibrate)
-                        self.vibrated = true
-                    }
-                    print("ready")
+                if runningAngle < 160.0 && runningMagnitude > 0.8 && !self.faceDetected && !self.vibrated {
+                    AudioServicesPlaySystemSound(kSystemSoundID_Vibrate)
+                    self.vibrated = true
                 }
             }
         }
@@ -147,6 +146,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         let cid:CIDetector = CIDetector(ofType:CIDetectorTypeFace, context:nil, options:[CIDetectorAccuracy: CIDetectorAccuracyHigh]);
         let results:NSArray = cid.featuresInImage(image, options: nil);
         if results.count > 0 {
+            faceDetected = true
             let face:CIFaceFeature = results.firstObject as! CIFaceFeature
             print("face found at \(face.bounds.origin.x),\(face.bounds.origin.y) of dimensions \(face.bounds.width)x\(face.bounds.height)")
             
@@ -160,6 +160,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
             }
         }else {
             print("no face detected")
+            self.faceDetected = false
         }
     }
     
