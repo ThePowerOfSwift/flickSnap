@@ -33,6 +33,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     
     var thumbNails = [UIImageView]()
     var thumbNailGallery = UIView()
+    var initialPosition:CGPoint?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -204,6 +205,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
                     self.thumbNails.last?.bottomAnchor.constraintEqualToAnchor(self.thumbNailGallery.bottomAnchor).active = true
                     self.thumbNails.last?.widthAnchor.constraintEqualToAnchor(self.thumbNailGallery.heightAnchor).active = true
                     
+                    print("imageView.frame.origin \(imageView.frame.origin)")
                     //need to somehow detect if adding another image would be cut off the page and instead insert a "view all" option
                     
                     
@@ -247,13 +249,22 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     }
     
     func dragImage(sender: UIPanGestureRecognizer){
-        print("dragging")
+        if initialPosition == nil {
+            initialPosition = sender.view!.frame.origin
+        }
+        
         if sender.state == UIGestureRecognizerState.Began || sender.state == UIGestureRecognizerState.Changed {
-            print("began | changed")
             let translation = sender.translationInView(self.view)
-            // note: 'view' is optional and need to be unwrapped
             sender.view!.center = CGPointMake(sender.view!.center.x + translation.x, sender.view!.center.y + translation.y)
             sender.setTranslation(CGPointMake(0,0), inView: self.view)
+        }
+        
+        if sender.state == .Ended {
+            //snap back to original spot
+            UIView.animateWithDuration(0.2) { () -> Void in
+                sender.view!.frame.origin = self.initialPosition!
+                self.initialPosition = nil
+            }
         }
     }
 }
