@@ -11,7 +11,7 @@ import CoreMotion
 import AudioToolbox
 import AVFoundation
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate {
 
     var motionManager:MotionManager = MotionManager()
     var angleLabel:UILabel = UILabel()
@@ -22,8 +22,9 @@ class ViewController: UIViewController {
     
     var useCamera:Bool = true
     var useMotion:Bool = true
-    var useCapture:Bool = true
+    var useCapture:Bool = false
     var useLabels:Bool = true
+//    var faceDetected:Bool = true
     
     let captureSession = AVCaptureSession()
     let stillImageOutput = AVCaptureStillImageOutput()
@@ -37,19 +38,24 @@ class ViewController: UIViewController {
         if useCamera {
             let devices = AVCaptureDevice.devices().filter{ $0.hasMediaType(AVMediaTypeVideo) && $0.position == AVCaptureDevicePosition.Front }
             if let captureDevice = devices.first as? AVCaptureDevice  {
-                
-                //            captureSession.addInput(AVCaptureDeviceInput(device: captureDevice, error: &error))
+
                 do {
                     let input = try AVCaptureDeviceInput(device: captureDevice)
                     captureSession.addInput(input)
                 } catch _ {
                     print("error: \(error?.localizedDescription)")
                 }
+                
+                let videoOutput = AVCaptureVideoDataOutput()
+                videoOutput.videoSettings = [kCVPixelBufferPixelFormatTypeKey:Int(kCVPixelFormatType_32BGRA)]
+                videoOutput.setSampleBufferDelegate(self, queue: dispatch_queue_create("sample buffer delegate", DISPATCH_QUEUE_SERIAL))
+                
                 captureSession.sessionPreset = AVCaptureSessionPresetPhoto
                 captureSession.startRunning()
                 stillImageOutput.outputSettings = [AVVideoCodecKey:AVVideoCodecJPEG]
                 if captureSession.canAddOutput(stillImageOutput) {
-                    captureSession.addOutput(stillImageOutput)
+//                    captureSession.addOutput(stillImageOutput)
+                    captureSession.addOutput(videoOutput)
                 }
                 if let previewLayer = AVCaptureVideoPreviewLayer(session: captureSession) {
                     previewLayer.bounds = view.bounds
@@ -109,25 +115,28 @@ class ViewController: UIViewController {
                 deviceMotion?.attitude.multiplyByInverseOfAttitude(self.initialAttitude!)
                 let runningMagnitude = self.handleAttitudeData((deviceMotion?.attitude)!)
                 
+//                print("\(deviceMotion!.userAcceleration.x) | \(deviceMotion!.userAcceleration.y) | \(deviceMotion!.userAcceleration.x)")
+                
                 if runningAngle < 170.0 && runningMagnitude > 0.5 {
-                    self.view.backgroundColor = UIColor.greenColor()
+//                    self.view.backgroundColor = UIColor.greenColor()
                     if !self.vibrated {
                         AudioServicesPlaySystemSound(kSystemSoundID_Vibrate)
                         self.vibrated = true
                     }
-                    print("ready for capture")
-                } else {
-                    self.view.backgroundColor = UIColor.whiteColor()
-                    print("capture")
-                    
-                    if self.captureSession.running && self.vibrated {
-                        self.vibrated = false
-                        if self.useCapture {
-                            self.saveToCamera()
-                            //Custom capture method.
-                        }
-                    }
+                    print("ready")
                 }
+//                else if deviceMotion?.userAcceleration.x < 0.25 {
+////                    self.view.backgroundColor = UIColor.whiteColor()
+//                    
+//                    if self.captureSession.running && self.vibrated {
+//                        self.vibrated = false
+//                        if self.useCapture {
+//                            //Custom capture method.
+////                            self.saveToCamera()
+////                            print("capture \(deviceMotion!.userAcceleration.x) | \(deviceMotion!.userAcceleration.y) | \(deviceMotion!.userAcceleration.x)")
+//                        }
+//                    }
+//                }
             }
         }
     }
@@ -158,6 +167,61 @@ class ViewController: UIViewController {
         }
         
         return magnitude
+    }
+    
+    func captureOutput(captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, fromConnection connection: AVCaptureConnection!) {
+        connection.videoOrientation = AVCaptureVideoOrientation(rawValue: UIApplication.sharedApplication().statusBarOrientation.rawValue)!
+        
+        guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
+            print("no pixelbuffer")
+            return
+        }
+        
+//        dispatch_async(dispatch_get_main_queue()){
+            self.newCameraImage(sampleBuffer, image: CIImage(CVPixelBuffer: pixelBuffer))
+//        }
+    }
+    
+    func newCameraImage(sampleBuffer: CMSampleBuffer, image: CIImage) {
+        let cid:CIDetector = CIDetector(ofType:CIDetectorTypeFace, context:nil, options:[CIDetectorAccuracy: CIDetectorAccuracyHigh]);
+        let results:NSArray = cid.featuresInImage(image, options: nil);
+        if results.count > 0 {
+            let face:CIFaceFeature = results.firstObject as! CIFaceFeature
+            print("face found at \(face.bounds.origin.x),\(face.bounds.origin.y) of dimensions \(face.bounds.width)x\(face.bounds.height)")
+            
+            //save photo
+            if vibrated {
+                dispatch_async(dispatch_get_main_queue()){
+                    AudioServicesPlaySystemSound(1108)
+                    UIImageWriteToSavedPhotosAlbum(self.imageFromSampleBuffer(sampleBuffer), nil, nil, nil)
+                    self.vibrated = false
+//                    AudioServicesPlaySystemSound(1108)
+                }
+            }
+        }else {
+            print("no face detected")
+        }
+    }
+    
+    func imageFromSampleBuffer(sampleBuffer:CMSampleBuffer!) -> UIImage {
+        let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer)!
+        CVPixelBufferLockBaseAddress(imageBuffer, 0)
+        
+        let baseAddress = CVPixelBufferGetBaseAddress(imageBuffer)
+        let bytesPerRow = CVPixelBufferGetBytesPerRow(imageBuffer)
+        let width = CVPixelBufferGetWidth(imageBuffer)
+        let height = CVPixelBufferGetHeight(imageBuffer)
+        
+        let colorSpace = CGColorSpaceCreateDeviceRGB()
+        
+        let bitmapInfo:CGBitmapInfo = [.ByteOrder32Little, CGBitmapInfo(rawValue: CGImageAlphaInfo.PremultipliedFirst.rawValue)]
+        let context = CGBitmapContextCreate(baseAddress, width, height, 8, bytesPerRow, colorSpace, bitmapInfo.rawValue)
+        
+        let quartzImage = CGBitmapContextCreateImage(context)
+        CVPixelBufferUnlockBaseAddress(imageBuffer, 0)
+        
+        let image = UIImage(CGImage: quartzImage!)
+        return image
     }
 }
 
