@@ -19,12 +19,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     var initialAttitude:CMAttitude?
     
     var vibrated:Bool = false
-    
-    var useCamera:Bool = true
-    var useMotion:Bool = true
-    var useCapture:Bool = false
     var useLabels:Bool = true
-//    var faceDetected:Bool = true
     
     let captureSession = AVCaptureSession()
     let stillImageOutput = AVCaptureStillImageOutput()
@@ -35,71 +30,54 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         // Do any additional setup after loading the view, typically from a nib.
         view.backgroundColor = UIColor.whiteColor()
         
-        if useCamera {
-            let devices = AVCaptureDevice.devices().filter{ $0.hasMediaType(AVMediaTypeVideo) && $0.position == AVCaptureDevicePosition.Front }
-            if let captureDevice = devices.first as? AVCaptureDevice  {
+        let devices = AVCaptureDevice.devices().filter{ $0.hasMediaType(AVMediaTypeVideo) && $0.position == AVCaptureDevicePosition.Front }
+        if let captureDevice = devices.first as? AVCaptureDevice  {
 
-                do {
-                    let input = try AVCaptureDeviceInput(device: captureDevice)
-                    captureSession.addInput(input)
-                } catch _ {
-                    print("error: \(error?.localizedDescription)")
-                }
-                
-                let videoOutput = AVCaptureVideoDataOutput()
-                videoOutput.videoSettings = [kCVPixelBufferPixelFormatTypeKey:Int(kCVPixelFormatType_32BGRA)]
-                videoOutput.setSampleBufferDelegate(self, queue: dispatch_queue_create("sample buffer delegate", DISPATCH_QUEUE_SERIAL))
-                
-                captureSession.sessionPreset = AVCaptureSessionPresetPhoto
-                captureSession.startRunning()
-                stillImageOutput.outputSettings = [AVVideoCodecKey:AVVideoCodecJPEG]
-                if captureSession.canAddOutput(stillImageOutput) {
-//                    captureSession.addOutput(stillImageOutput)
-                    captureSession.addOutput(videoOutput)
-                }
-                if let previewLayer = AVCaptureVideoPreviewLayer(session: captureSession) {
-                    previewLayer.bounds = view.bounds
-                    previewLayer.position = CGPointMake(view.bounds.midX, view.bounds.midY)
-                    previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
-                    let cameraPreview = UIView(frame: CGRectMake(0.0, 0.0, view.bounds.size.width, view.bounds.size.height))
-                    cameraPreview.layer.addSublayer(previewLayer)
-                    //                cameraPreview.addGestureRecognizer(UITapGestureRecognizer(target: self, action:"saveToCamera:"))
-                    view.addSubview(cameraPreview)
-                }
+            do {
+                let input = try AVCaptureDeviceInput(device: captureDevice)
+                captureSession.addInput(input)
+            } catch _ {
+                print("error: \(error?.localizedDescription)")
+            }
+            
+            let videoOutput = AVCaptureVideoDataOutput()
+            videoOutput.videoSettings = [kCVPixelBufferPixelFormatTypeKey:Int(kCVPixelFormatType_32BGRA)]
+            videoOutput.setSampleBufferDelegate(self, queue: dispatch_queue_create("sample buffer delegate", DISPATCH_QUEUE_SERIAL))
+            
+            captureSession.sessionPreset = AVCaptureSessionPresetPhoto
+            captureSession.startRunning()
+            if captureSession.canAddOutput(videoOutput) {
+                captureSession.addOutput(videoOutput)
+            }
+            if let previewLayer = AVCaptureVideoPreviewLayer(session: captureSession) {
+                previewLayer.bounds = view.bounds
+                previewLayer.position = CGPointMake(view.bounds.midX, view.bounds.midY)
+                previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
+                let cameraPreview = UIView(frame: CGRectMake(0.0, 0.0, view.bounds.size.width, view.bounds.size.height))
+                cameraPreview.layer.addSublayer(previewLayer)
+                view.addSubview(cameraPreview)
             }
         }
         
-        if useMotion {
-            if useLabels {
-                view.addSubview(angleLabel)
-                angleLabel.translatesAutoresizingMaskIntoConstraints = false
-                angleLabel.centerXAnchor.constraintEqualToAnchor(view.centerXAnchor).active = true
-                angleLabel.centerYAnchor.constraintEqualToAnchor(view.centerYAnchor).active = true
-                angleLabel.intrinsicContentSize()
-                angleLabel.text = "angelLabel"
-                angleLabel.backgroundColor = UIColor.lightGrayColor()
-                
-                view.addSubview(magnitudeLabel)
-                magnitudeLabel.translatesAutoresizingMaskIntoConstraints = false
-                magnitudeLabel.centerXAnchor.constraintEqualToAnchor(view.centerXAnchor).active = true
-                magnitudeLabel.topAnchor.constraintEqualToAnchor(angleLabel.bottomAnchor, constant: 10).active = true
-                magnitudeLabel.intrinsicContentSize()
-                magnitudeLabel.text = "attitudeLabel"
-                magnitudeLabel.backgroundColor = UIColor.lightGrayColor()
-            }
+        if useLabels {
+            view.addSubview(angleLabel)
+            angleLabel.translatesAutoresizingMaskIntoConstraints = false
+            angleLabel.centerXAnchor.constraintEqualToAnchor(view.centerXAnchor).active = true
+            angleLabel.centerYAnchor.constraintEqualToAnchor(view.centerYAnchor).active = true
+            angleLabel.intrinsicContentSize()
+            angleLabel.text = "angelLabel"
+            angleLabel.backgroundColor = UIColor.lightGrayColor()
             
-            processMotion()
+            view.addSubview(magnitudeLabel)
+            magnitudeLabel.translatesAutoresizingMaskIntoConstraints = false
+            magnitudeLabel.centerXAnchor.constraintEqualToAnchor(view.centerXAnchor).active = true
+            magnitudeLabel.topAnchor.constraintEqualToAnchor(angleLabel.bottomAnchor, constant: 10).active = true
+            magnitudeLabel.intrinsicContentSize()
+            magnitudeLabel.text = "attitudeLabel"
+            magnitudeLabel.backgroundColor = UIColor.lightGrayColor()
         }
-    }
-    
-    func saveToCamera() {
-        if let videoConnection = stillImageOutput.connectionWithMediaType(AVMediaTypeVideo) {
-            stillImageOutput.captureStillImageAsynchronouslyFromConnection(videoConnection) {
-                (imageDataSampleBuffer, error) -> Void in
-                let imageData = AVCaptureStillImageOutput.jpegStillImageNSDataRepresentation(imageDataSampleBuffer)
-                UIImageWriteToSavedPhotosAlbum(UIImage(data: imageData)!, nil, nil, nil)
-            }
-        }
+        
+        processMotion()
     }
     
     func processMotion(){
@@ -115,28 +93,13 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
                 deviceMotion?.attitude.multiplyByInverseOfAttitude(self.initialAttitude!)
                 let runningMagnitude = self.handleAttitudeData((deviceMotion?.attitude)!)
                 
-//                print("\(deviceMotion!.userAcceleration.x) | \(deviceMotion!.userAcceleration.y) | \(deviceMotion!.userAcceleration.x)")
-                
                 if runningAngle < 170.0 && runningMagnitude > 0.5 {
-//                    self.view.backgroundColor = UIColor.greenColor()
                     if !self.vibrated {
                         AudioServicesPlaySystemSound(kSystemSoundID_Vibrate)
                         self.vibrated = true
                     }
                     print("ready")
                 }
-//                else if deviceMotion?.userAcceleration.x < 0.25 {
-////                    self.view.backgroundColor = UIColor.whiteColor()
-//                    
-//                    if self.captureSession.running && self.vibrated {
-//                        self.vibrated = false
-//                        if self.useCapture {
-//                            //Custom capture method.
-////                            self.saveToCamera()
-////                            print("capture \(deviceMotion!.userAcceleration.x) | \(deviceMotion!.userAcceleration.y) | \(deviceMotion!.userAcceleration.x)")
-//                        }
-//                    }
-//                }
             }
         }
     }
@@ -177,9 +140,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
             return
         }
         
-//        dispatch_async(dispatch_get_main_queue()){
-            self.newCameraImage(sampleBuffer, image: CIImage(CVPixelBuffer: pixelBuffer))
-//        }
+        self.newCameraImage(sampleBuffer, image: CIImage(CVPixelBuffer: pixelBuffer))
     }
     
     func newCameraImage(sampleBuffer: CMSampleBuffer, image: CIImage) {
@@ -195,7 +156,6 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
                     AudioServicesPlaySystemSound(1108)
                     UIImageWriteToSavedPhotosAlbum(self.imageFromSampleBuffer(sampleBuffer), nil, nil, nil)
                     self.vibrated = false
-//                    AudioServicesPlaySystemSound(1108)
                 }
             }
         }else {
