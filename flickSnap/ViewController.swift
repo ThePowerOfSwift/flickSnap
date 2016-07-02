@@ -19,12 +19,15 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     var initialAttitude:CMAttitude?
     
     var vibrated:Bool = false
-    var faceDetected:Bool = true 
+    var faceDetected:Bool = true
     var useLabels:Bool = true
-    
     
     let captureSession = AVCaptureSession()
     let stillImageOutput = AVCaptureStillImageOutput()
+    
+    var previewLayer:AVCaptureVideoPreviewLayer!
+    var captureDevice:AVCaptureDevice!
+    
     var error: NSError?
     
     override func viewDidLoad() {
@@ -34,7 +37,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         
         let devices = AVCaptureDevice.devices().filter{ $0.hasMediaType(AVMediaTypeVideo) && $0.position == AVCaptureDevicePosition.Front }
         if let captureDevice = devices.first as? AVCaptureDevice  {
-
+            self.captureDevice = captureDevice
             do {
                 let input = try AVCaptureDeviceInput(device: captureDevice)
                 captureSession.addInput(input)
@@ -58,6 +61,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
                 let cameraPreview = UIView(frame: CGRectMake(0.0, 0.0, view.bounds.size.width, view.bounds.size.height))
                 cameraPreview.layer.addSublayer(previewLayer)
                 view.addSubview(cameraPreview)
+                self.previewLayer = previewLayer
             }
         }
         
@@ -150,11 +154,17 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
             let face:CIFaceFeature = results.firstObject as! CIFaceFeature
             print("face found at \(face.bounds.origin.x),\(face.bounds.origin.y) of dimensions \(face.bounds.width)x\(face.bounds.height)")
             
+            
             //save photo
             if vibrated {
                 self.vibrated = false
                 AudioServicesPlaySystemSound(1108)
                 dispatch_async(dispatch_get_main_queue()){
+                    if self.captureDevice.focusPointOfInterestSupported{
+                        self.captureDevice.focusPointOfInterest = self.previewLayer.captureDevicePointOfInterestForPoint(self.calculateFaceCenter(face.bounds))
+                        self.captureDevice.focusMode = .AutoFocus
+                    }
+
                     UIImageWriteToSavedPhotosAlbum(self.imageFromSampleBuffer(sampleBuffer), nil, nil, nil)
                 }
             }
@@ -184,5 +194,11 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         let image = UIImage(CGImage: quartzImage!)
         return image
     }
+    
+    func calculateFaceCenter(bounds: CGRect) -> CGPoint{
+        let centerX = bounds.origin.x + bounds.width / 2.0
+        let centerY = bounds.origin.y + bounds.width / 2.0
+        
+        return CGPoint(x: centerX, y: centerY)
+    }
 }
-
