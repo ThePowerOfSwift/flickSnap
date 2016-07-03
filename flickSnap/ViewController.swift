@@ -259,9 +259,12 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         }
         
         if sender.state == .Ended {
-            if true {
+            //detect user intension by looking at where they dragged the thumbnail; trash if dragged any part of image to left or right edge otherwise snap back
+            let doesIntersectLeftEdge = thumbNailGallery.convertRect(sender.view!.frame, toView: self.view).intersects(CGRectMake(0, 0, 1, view.frame.height))
+            let doesIntersectRightEdge = thumbNailGallery.convertRect(sender.view!.frame, toView: self.view).intersects(CGRectMake(view.frame.width-1, 0, 1, view.frame.height))
+
+            if  doesIntersectLeftEdge || doesIntersectRightEdge {
                 let removedImageIndex = thumbNails.removeObject(sender.view as! UIImageView)
-                print("remove image #\(removedImageIndex!)")
                 sender.view?.removeFromSuperview()
                 
                 //need to reset the leading constraint of the images arranged to the right of the image removed
