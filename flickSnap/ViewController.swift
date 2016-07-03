@@ -96,6 +96,11 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         processMotion()
     }
     
+    override func viewWillAppear(animated: Bool) {
+        //sets the navbar behind the preview layer
+        self.navigationController!.navigationBar.layer.zPosition = -1
+    }
+    
     func setupThumbnailView(){
 
         view.addSubview(thumbNailGallery)
@@ -246,7 +251,9 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     }
     
     func viewAllButtonTapped(sender: UIButton){
-        print("view all tapped")
+        let vc = ThumbnailCollectionViewController()
+        vc.thumbnailsArray = thumbNails
+        navigationController?.pushViewController(vc, animated: true)
     }
     
     func imageFromSampleBuffer(sampleBuffer:CMSampleBuffer!) -> UIImage {
