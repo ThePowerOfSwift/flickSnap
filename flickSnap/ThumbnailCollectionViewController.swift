@@ -30,7 +30,7 @@ class ThumbnailCollectionViewController: UIViewController, UICollectionViewDeleg
         collectionView?.translatesAutoresizingMaskIntoConstraints = false
         collectionView?.delegate = self
         collectionView?.dataSource = self
-        collectionView?.registerClass(ThumbnailCell.self, forCellWithReuseIdentifier: "Cell")
+        collectionView?.registerClass(UICollectionViewCell.self, forCellWithReuseIdentifier: "Cell")
         collectionView?.backgroundColor = UIColor.cyanColor()
         view.addSubview(collectionView!)
         addCollectionViewConstraints()
@@ -69,21 +69,14 @@ class ThumbnailCollectionViewController: UIViewController, UICollectionViewDeleg
         imageView.leadingAnchor.constraintEqualToAnchor(cell.contentView.leadingAnchor).active = true
         imageView.trailingAnchor.constraintEqualToAnchor(cell.contentView.trailingAnchor).active = true
         
-        
-        // Configure the cell
-        
-        
         return cell
     }
     
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
         let vc = ThumbnailDetailViewController()
-        
         vc.thumbnail = thumbnailsArray[indexPath.row].image
         navigationController?.pushViewController(vc, animated: true)
         
     }
-    
-    
     
 }

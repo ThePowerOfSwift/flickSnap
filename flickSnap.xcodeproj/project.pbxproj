@@ -14,7 +14,6 @@
 		F62BC0981D260EAB000D17F8 /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = F62BC0971D260EAB000D17F8 /* README.md */; };
 		F62BC09A1D26112A000D17F8 /* MotionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62BC0991D26112A000D17F8 /* MotionManager.swift */; };
 		F6F51DA61D289B3100054A8E /* ThumbnailCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6F51DA51D289B3100054A8E /* ThumbnailCollectionViewController.swift */; };
-		F6F51DA81D28A21500054A8E /* ThumbnailCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6F51DA71D28A21500054A8E /* ThumbnailCell.swift */; };
 		F6F51DAA1D28A9A100054A8E /* ThumbnailDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6F51DA91D28A9A100054A8E /* ThumbnailDetailViewController.swift */; };
 /* End PBXBuildFile section */
 
@@ -28,7 +27,6 @@
 		F62BC0971D260EAB000D17F8 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = SOURCE_ROOT; };
 		F62BC0991D26112A000D17F8 /* MotionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MotionManager.swift; sourceTree = "<group>"; };
 		F6F51DA51D289B3100054A8E /* ThumbnailCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThumbnailCollectionViewController.swift; sourceTree = "<group>"; };
-		F6F51DA71D28A21500054A8E /* ThumbnailCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThumbnailCell.swift; sourceTree = "<group>"; };
 		F6F51DA91D28A9A100054A8E /* ThumbnailDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThumbnailDetailViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -65,7 +63,6 @@
 				F62BC0851D260D66000D17F8 /* AppDelegate.swift */,
 				F62BC0871D260D66000D17F8 /* ViewController.swift */,
 				F6F51DA51D289B3100054A8E /* ThumbnailCollectionViewController.swift */,
-				F6F51DA71D28A21500054A8E /* ThumbnailCell.swift */,
 				F6F51DA91D28A9A100054A8E /* ThumbnailDetailViewController.swift */,
 				F62BC0991D26112A000D17F8 /* MotionManager.swift */,
 				F62BC08C1D260D66000D17F8 /* Assets.xcassets */,
@@ -147,7 +144,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F6F51DA81D28A21500054A8E /* ThumbnailCell.swift in Sources */,
 				F62BC0981D260EAB000D17F8 /* README.md in Sources */,
 				F6F51DAA1D28A9A100054A8E /* ThumbnailDetailViewController.swift in Sources */,
 				F62BC0881D260D66000D17F8 /* ViewController.swift in Sources */,
