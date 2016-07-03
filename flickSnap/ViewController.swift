@@ -33,7 +33,9 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     
     var thumbNails = [UIImageView]()
     var thumbNailGallery = UIView()
+    var maxThumbnails:Int!
     var initialPosition:CGPoint?
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -99,11 +101,22 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         view.addSubview(thumbNailGallery)
         
         thumbNailGallery.translatesAutoresizingMaskIntoConstraints = false
-        thumbNailGallery.leadingAnchor.constraintEqualToAnchor(view.leadingAnchor, constant: 10).active = true
+        thumbNailGallery.leadingAnchor.constraintEqualToAnchor(view.leadingAnchor).active = true
         thumbNailGallery.trailingAnchor.constraintEqualToAnchor(view.trailingAnchor).active = true
         thumbNailGallery.bottomAnchor.constraintEqualToAnchor(bottomLayoutGuide.topAnchor, constant: -10).active = true
         thumbNailGallery.heightAnchor.constraintEqualToConstant(100).active = true
         
+        maxThumbnails = determineMaxThumbnails()
+    }
+    
+    func determineMaxThumbnails() -> Int {
+        let mainViewWidth = Int(self.view.frame.width)
+        let imageWidth = 100
+        let imageLeadPadding = 10
+        let fullImageWidth = Int(imageWidth + imageLeadPadding)
+        let maxThumbnailCount:Int = mainViewWidth / fullImageWidth
+        print(maxThumbnailCount)
+        return maxThumbnailCount
     }
     
     func processMotion(){
@@ -185,38 +198,55 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
                         self.captureDevice.focusMode = .AutoFocus
                     }
                     
+                    
                     let imageView = UIImageView(image: self.imageFromSampleBuffer(sampleBuffer))
                     imageView.userInteractionEnabled = true
+                    imageView.contentMode = .ScaleAspectFit
                     imageView.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(ViewController.dragImage(_:))))
                     
                     
                     self.thumbNails.append(imageView)
-                    self.thumbNailGallery.addSubview(imageView)
-                    imageView.translatesAutoresizingMaskIntoConstraints = false
                     
-                    if self.thumbNails.count == 1 {
-                        //then this image is the first thumbnail
-                        self.thumbNails.last?.leadingAnchor.constraintEqualToAnchor(self.thumbNailGallery.leadingAnchor).active = true
-                    } else {
-                        self.thumbNails.last?.leadingAnchor.constraintEqualToAnchor(self.thumbNails[self.thumbNails.count - 2].trailingAnchor, constant: 10).active = true
-                    }
-
-                    self.thumbNails.last?.topAnchor.constraintEqualToAnchor(self.thumbNailGallery.topAnchor).active = true
-                    self.thumbNails.last?.bottomAnchor.constraintEqualToAnchor(self.thumbNailGallery.bottomAnchor).active = true
-                    self.thumbNails.last?.widthAnchor.constraintEqualToAnchor(self.thumbNailGallery.heightAnchor).active = true
-                    
-                    //need to somehow detect if adding another image would be cut off the page and instead insert a "view all" option
-                    
-                    
+                    //need to add a viewall button instead of another image
+                    if self.thumbNails.count == self.maxThumbnails {
+                        let viewAllButton = UIButton()
+                        self.thumbNailGallery.addSubview(viewAllButton)
+                        viewAllButton.addTarget(self, action: #selector(ViewController.viewAllButtonTapped(_:)), forControlEvents: UIControlEvents.TouchUpInside)
+                        viewAllButton.setTitle("ViewAll", forState: UIControlState.Normal)
+                        viewAllButton.translatesAutoresizingMaskIntoConstraints = false
+                        
+                        viewAllButton.leadingAnchor.constraintEqualToAnchor(self.thumbNails[self.thumbNails.count - 2].trailingAnchor, constant: 10).active = true
+                        viewAllButton.topAnchor.constraintEqualToAnchor(self.thumbNailGallery.topAnchor).active = true
+                        viewAllButton.bottomAnchor.constraintEqualToAnchor(self.thumbNailGallery.bottomAnchor).active = true
+                        viewAllButton.widthAnchor.constraintEqualToAnchor(self.thumbNailGallery.heightAnchor).active = true
+                        
+                    }else if self.thumbNails.count < self.maxThumbnails {
+                        self.thumbNailGallery.addSubview(imageView)
+                        imageView.translatesAutoresizingMaskIntoConstraints = false
+                        
+                        if self.thumbNails.count == 1 {
+                            //then this image is the first thumbnail
+                            self.thumbNails.last?.leadingAnchor.constraintEqualToAnchor(self.thumbNailGallery.leadingAnchor, constant: 10).active = true
+                        } else {
+                            self.thumbNails.last?.leadingAnchor.constraintEqualToAnchor(self.thumbNails[self.thumbNails.count - 2].trailingAnchor, constant: 10).active = true
+                        }
+                        
+                        self.thumbNails.last?.topAnchor.constraintEqualToAnchor(self.thumbNailGallery.topAnchor).active = true
+                        self.thumbNails.last?.bottomAnchor.constraintEqualToAnchor(self.thumbNailGallery.bottomAnchor).active = true
+                        self.thumbNails.last?.widthAnchor.constraintEqualToAnchor(self.thumbNailGallery.heightAnchor).active = true
+                        
 //                    UIImageWriteToSavedPhotosAlbum(self.imageFromSampleBuffer(sampleBuffer), nil, nil, nil)
-                    
-                    
+                    }
                 }
             }
         }else {
             print("no face detected")
             self.faceDetected = false
         }
+    }
+    
+    func viewAllButtonTapped(sender: UIButton){
+        print("view all tapped")
     }
     
     func imageFromSampleBuffer(sampleBuffer:CMSampleBuffer!) -> UIImage {
@@ -273,7 +303,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
                 if removedImageIndex! != thumbNails.count {
                     if removedImageIndex! == 0 {
                         //then this image is the first thumbnail
-                        self.thumbNails[removedImageIndex!].leadingAnchor.constraintEqualToAnchor(self.thumbNailGallery.leadingAnchor).active = true
+                        self.thumbNails[removedImageIndex!].leadingAnchor.constraintEqualToAnchor(self.thumbNailGallery.leadingAnchor, constant: 10).active = true
                     } else {
                         self.thumbNails[removedImageIndex!].leadingAnchor.constraintEqualToAnchor(self.thumbNails[removedImageIndex! - 1].trailingAnchor, constant: 10).active = true
                     }
