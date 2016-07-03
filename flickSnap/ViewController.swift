@@ -204,7 +204,6 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
                         self.captureDevice.focusMode = .AutoFocus
                     }
                     
-                    
                     let imageView = UIImageView(image: self.imageFromSampleBuffer(sampleBuffer))
                     imageView.userInteractionEnabled = true
                     imageView.contentMode = .ScaleAspectFit
@@ -240,9 +239,15 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
                         self.thumbNails.last?.topAnchor.constraintEqualToAnchor(self.thumbNailGallery.topAnchor).active = true
                         self.thumbNails.last?.bottomAnchor.constraintEqualToAnchor(self.thumbNailGallery.bottomAnchor).active = true
                         self.thumbNails.last?.widthAnchor.constraintEqualToAnchor(self.thumbNailGallery.heightAnchor).active = true
-                        
-//                    UIImageWriteToSavedPhotosAlbum(self.imageFromSampleBuffer(sampleBuffer), nil, nil, nil)
                     }
+                    
+                    //update thumbnails shown with only the most recent images, pushing old images out of view
+                    
+                    if self.thumbNails.count >= self.maxThumbnails {
+                        print("update thumbnails")
+                        
+                    }
+                    
                 }
             }
         }else {
