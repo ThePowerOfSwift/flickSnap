@@ -55,9 +55,6 @@ class ThumbnailDetailViewController: UIViewController {
         scrollView.leadingAnchor.constraintEqualToAnchor(filterView.leadingAnchor).active = true
         scrollView.trailingAnchor.constraintEqualToAnchor(filterView.trailingAnchor).active = true
         scrollView.bottomAnchor.constraintEqualToAnchor(filterView.bottomAnchor).active = true
-        
-//        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[scrollView]|", options: .AlignAllCenterX, metrics: nil, views: ["scrollView": scrollView]))
-//        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[scrollView]|", options: .AlignAllCenterX, metrics: nil, views: ["scrollView": scrollView]))
 
         stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -69,41 +66,17 @@ class ThumbnailDetailViewController: UIViewController {
         stackView.trailingAnchor.constraintEqualToAnchor(scrollView.trailingAnchor).active = true
         stackView.bottomAnchor.constraintEqualToAnchor(scrollView.bottomAnchor).active = true
 
+        let filterArray = [UIColor.blueColor(), UIColor.yellowColor(), UIColor.greenColor(), UIColor.redColor()]
         
-//        scrollView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[stackView]|", options: NSLayoutFormatOptions.AlignAllCenterX, metrics: nil, views: ["stackView": stackView]))
-//        scrollView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[stackView]", options: NSLayoutFormatOptions.AlignAllCenterX, metrics: nil, views: ["stackView": stackView]))
-
-        let blueFilter = UIButton()
-        blueFilter.backgroundColor = UIColor.blueColor()
-        blueFilter.addTarget(self, action: #selector(self.updateTint(_:)), forControlEvents: UIControlEvents.TouchUpInside)
-        blueFilter.translatesAutoresizingMaskIntoConstraints = false
-        stackView.addArrangedSubview(blueFilter)
-        blueFilter.heightAnchor.constraintEqualToAnchor(filterView.heightAnchor).active = true
-        blueFilter.widthAnchor.constraintEqualToAnchor(blueFilter.heightAnchor).active = true
-        
-        let yellowFilter = UIButton()
-        yellowFilter.backgroundColor = UIColor.yellowColor()
-        yellowFilter.addTarget(self, action: #selector(self.updateTint(_:)), forControlEvents: UIControlEvents.TouchUpInside)
-        yellowFilter.translatesAutoresizingMaskIntoConstraints = false
-        stackView.addArrangedSubview(yellowFilter)
-        yellowFilter.heightAnchor.constraintEqualToAnchor(filterView.heightAnchor).active = true
-        yellowFilter.widthAnchor.constraintEqualToAnchor(yellowFilter.heightAnchor).active = true
-        
-        let greenFilter = UIButton()
-        greenFilter.backgroundColor = UIColor.greenColor()
-        greenFilter.addTarget(self, action: #selector(self.updateTint(_:)), forControlEvents: UIControlEvents.TouchUpInside)
-        greenFilter.translatesAutoresizingMaskIntoConstraints = false
-        stackView.addArrangedSubview(greenFilter)
-        greenFilter.heightAnchor.constraintEqualToAnchor(filterView.heightAnchor).active = true
-        greenFilter.widthAnchor.constraintEqualToAnchor(greenFilter.heightAnchor).active = true
-        
-        let redFilter = UIButton()
-        redFilter.backgroundColor = UIColor.redColor()
-        redFilter.addTarget(self, action: #selector(self.updateTint(_:)), forControlEvents: UIControlEvents.TouchUpInside)
-        redFilter.translatesAutoresizingMaskIntoConstraints = false
-        stackView.addArrangedSubview(redFilter)
-        redFilter.heightAnchor.constraintEqualToAnchor(filterView.heightAnchor).active = true
-        redFilter.widthAnchor.constraintEqualToAnchor(redFilter.heightAnchor).active = true
+        for filter in filterArray {
+            let buttonButton = UIButton()
+            buttonButton.backgroundColor = filter
+            buttonButton.addTarget(self, action: #selector(self.updateTint(_:)), forControlEvents: UIControlEvents.TouchUpInside)
+            buttonButton.translatesAutoresizingMaskIntoConstraints = false
+            stackView.addArrangedSubview(buttonButton)
+            buttonButton.heightAnchor.constraintEqualToAnchor(filterView.heightAnchor).active = true
+            buttonButton.widthAnchor.constraintEqualToAnchor(buttonButton.heightAnchor).active = true
+        }
     }
     
     override func viewDidLayoutSubviews() {
