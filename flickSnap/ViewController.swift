@@ -208,7 +208,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
                     imageView.userInteractionEnabled = true
                     imageView.contentMode = .ScaleAspectFit
                     imageView.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(ViewController.dragImage(_:))))
-                    
+                    imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(ViewController.thumbnailTapped(_:))))
                     
                     self.thumbNails.append(imageView)
                     
@@ -253,6 +253,12 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     func viewAllButtonTapped(sender: UIButton){
         let vc = ThumbnailCollectionViewController()
         vc.thumbnailsArray = thumbNails
+        navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    func thumbnailTapped(sender:UITapGestureRecognizer) {
+        let vc = ThumbnailDetailViewController()
+        vc.thumbnail = (sender.view as! UIImageView).image!
         navigationController?.pushViewController(vc, animated: true)
     }
     
