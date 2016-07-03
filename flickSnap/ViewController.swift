@@ -57,7 +57,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
             videoOutput.setSampleBufferDelegate(self, queue: dispatch_queue_create("sample buffer delegate", DISPATCH_QUEUE_SERIAL))
             
             captureSession.sessionPreset = AVCaptureSessionPresetPhoto
-            captureSession.startRunning()
+//            captureSession.startRunning()
             if captureSession.canAddOutput(videoOutput) {
                 captureSession.addOutput(videoOutput)
             }
@@ -99,6 +99,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     override func viewWillAppear(animated: Bool) {
         //sets the navbar behind the preview layer
         self.navigationController!.navigationBar.layer.zPosition = -1
+        captureSession.startRunning()
     }
     
     func setupThumbnailView(){
@@ -254,12 +255,14 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         let vc = ThumbnailCollectionViewController()
         vc.thumbnailsArray = thumbNails
         navigationController?.pushViewController(vc, animated: true)
+        captureSession.stopRunning()
     }
     
     func thumbnailTapped(sender:UITapGestureRecognizer) {
         let vc = ThumbnailDetailViewController()
         vc.thumbnail = (sender.view as! UIImageView).image!
         navigationController?.pushViewController(vc, animated: true)
+        captureSession.stopRunning()
     }
     
     func imageFromSampleBuffer(sampleBuffer:CMSampleBuffer!) -> UIImage {

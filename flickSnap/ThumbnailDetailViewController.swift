@@ -21,6 +21,7 @@ class ThumbnailDetailViewController: UIViewController {
         setupImageView()
         setupFilterView()
         setupScrollingStackView()
+        setupSaveButton()
     }
     
     func setupImageView(){
@@ -86,6 +87,20 @@ class ThumbnailDetailViewController: UIViewController {
     
     func updateTint(sender: UIButton){
         imageView.image = thumbnail.tint(sender.backgroundColor!)
+    }
+    
+    func setupSaveButton(){
+        let rightBarButton = UIBarButtonItem(barButtonSystemItem: .Save, target: self, action: #selector(self.saveAction(_:)))
+        self.navigationItem.rightBarButtonItem = rightBarButton
+    }
+    
+    func saveAction(sender: UIBarButtonItem){
+        UIImageWriteToSavedPhotosAlbum(imageView.image!, nil, nil, nil)
+        
+        let alertController = UIAlertController(title: "Image Saved", message: "success!", preferredStyle: .Alert)
+        let defaultAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
+        alertController.addAction(defaultAction)
+        presentViewController(alertController, animated: true, completion: nil)
     }
 }
 
