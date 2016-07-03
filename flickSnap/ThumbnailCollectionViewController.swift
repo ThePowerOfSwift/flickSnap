@@ -9,7 +9,7 @@
 import UIKit
 
 class ThumbnailCollectionViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-
+    
     var thumbnailsArray:[UIImageView]!
     var collectionView: UICollectionView?
     
@@ -20,14 +20,12 @@ class ThumbnailCollectionViewController: UIViewController, UICollectionViewDeleg
         view.backgroundColor = UIColor.orangeColor()
         addCollectionView()
     }
-
+    
     // MARK: UICollectionViewDataSource
     
     func addCollectionView() {
         let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
         layout.scrollDirection = UICollectionViewScrollDirection.Vertical
-//        layout.estimatedItemSize = CGSize(width: 100, height: 100)
-        
         collectionView = UICollectionView(frame: CGRectZero, collectionViewLayout: layout)
         collectionView?.translatesAutoresizingMaskIntoConstraints = false
         collectionView?.delegate = self
@@ -43,37 +41,49 @@ class ThumbnailCollectionViewController: UIViewController, UICollectionViewDeleg
         collectionView?.bottomAnchor.constraintEqualToAnchor(bottomLayoutGuide.topAnchor).active = true
         collectionView?.leadingAnchor.constraintEqualToAnchor(view.leadingAnchor).active = true
         collectionView?.trailingAnchor.constraintEqualToAnchor(view.trailingAnchor).active = true
-//        NSLayoutConstraint.activate([horizontalConstraint!,bottomConstraint!,leadingConstraint!,trailingConstraint!])
+        //        NSLayoutConstraint.activate([horizontalConstraint!,bottomConstraint!,leadingConstraint!,trailingConstraint!])
     }
-
+    
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return thumbnailsArray.count
     }
-
+    
     func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
-        return CGSize(width: 50,height: 50)
+        
+        let sideLength = self.view.frame.width / 2.0
+        return CGSize(width: sideLength, height: sideLength)
     }
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("Cell", forIndexPath: indexPath)
-        let image:UIImageView = thumbnailsArray[indexPath.row]
-        image.contentMode = .ScaleAspectFit
-        cell.contentView.addSubview(image)
-
-        image.topAnchor.constraintEqualToAnchor(cell.contentView.topAnchor).active = true
-        image.bottomAnchor.constraintEqualToAnchor(cell.contentView.bottomAnchor).active = true
-        image.leadingAnchor.constraintEqualToAnchor(cell.contentView.leadingAnchor).active = true
-        image.trailingAnchor.constraintEqualToAnchor(cell.contentView.trailingAnchor).active = true
+        
+        
+        let image:UIImage = thumbnailsArray[indexPath.row].image!
+        let imageView:UIImageView = UIImageView(image: image)
+        imageView.contentMode = .ScaleAspectFit
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        cell.contentView.addSubview(imageView)
+        
+        imageView.topAnchor.constraintEqualToAnchor(cell.contentView.topAnchor).active = true
+        imageView.bottomAnchor.constraintEqualToAnchor(cell.contentView.bottomAnchor).active = true
+        imageView.leadingAnchor.constraintEqualToAnchor(cell.contentView.leadingAnchor).active = true
+        imageView.trailingAnchor.constraintEqualToAnchor(cell.contentView.trailingAnchor).active = true
+        
         
         // Configure the cell
         
+        
         return cell
     }
-
+    
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
-        print("selected index: #\(indexPath.row)")
+        let vc = ThumbnailDetailViewController()
+        
+        vc.thumbnail = thumbnailsArray[indexPath.row].image
+        navigationController?.pushViewController(vc, animated: true)
+        
     }
     
     
-
+    
 }
