@@ -264,8 +264,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     }
     
     func thumbnailTapped(sender:UITapGestureRecognizer) {
-        let vc = ThumbnailDetailViewController()
-        vc.thumbnail = (sender.view as! UIImageView).image!
+        let vc = ThumbnailDetailViewController(thumbnail: (sender.view as! UIImageView).image!)
         navigationController?.pushViewController(vc, animated: true)
         captureSession.stopRunning()
     }
@@ -341,16 +340,3 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     }
 }
 
-extension Array where Element : Equatable {
-    
-    // Remove first collection element that is equal to the given `object`:
-    mutating func removeObject(object : Generator.Element) -> Int? {
-        if let index = self.indexOf(object) {
-            self.removeAtIndex(index)
-            return index
-        } else {
-            return nil
-        }
-        
-    }
-}

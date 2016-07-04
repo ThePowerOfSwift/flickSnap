@@ -10,164 +10,46 @@ import UIKit
 
 class ThumbnailDetailViewController: UIViewController {
     
-    var thumbnail:UIImage!
-    var imageView:UIImageView = UIImageView()
-    var filterView:UIView = UIView()
+    var thumbnailDetailView:ThumbnailDetailView!
+
+    init(thumbnail: UIImage){
+        let filters = [UIColor.blueColor(), UIColor.yellowColor(), UIColor.greenColor(), UIColor.redColor()]
+        thumbnailDetailView = ThumbnailDetailView(thumbnail: thumbnail, filterArray: filters)
+        super.init(nibName: nil, bundle: nil)
+    }
     
-    var scrollView:UIScrollView!
-    var stackView:UIStackView!
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func loadView() {
+        self.view = thumbnailDetailView
+    }
     
     override func viewDidLoad() {
-        setupImageView()
-        setupFilterView()
-        setupScrollingStackView()
-        setupSaveButton()
+        self.navigationController!.navigationBar.layer.zPosition = 0
+        setupNavBarSaveButton()
     }
     
-    func setupImageView(){
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.image = thumbnail
-        self.view.addSubview(imageView)
-//        imageView.image = imageView.image?.tint(UIColor.yellowColor())
-        imageView.topAnchor.constraintEqualToAnchor(topLayoutGuide.bottomAnchor).active = true
-        imageView.leadingAnchor.constraintEqualToAnchor(self.view.leadingAnchor).active = true
-        imageView.trailingAnchor.constraintEqualToAnchor(self.view.trailingAnchor).active = true
-        //        imageView.bottomAnchor.constraintEqualToAnchor(bottomLayoutGuide.topAnchor, constant: 100).active = true
-        NSLayoutConstraint(item: imageView, attribute: .Height, relatedBy: .Equal, toItem: self.view, attribute: .Height, multiplier: 0.75, constant: 0).active = true
-    }
-    
-    func setupFilterView(){
-        filterView.translatesAutoresizingMaskIntoConstraints = false
-        filterView.backgroundColor = UIColor.cyanColor()
-        self.view.addSubview(filterView)
-        
-        filterView.topAnchor.constraintEqualToAnchor(imageView.bottomAnchor).active = true
-        filterView.leadingAnchor.constraintEqualToAnchor(self.view.leadingAnchor).active = true
-        filterView.trailingAnchor.constraintEqualToAnchor(self.view.trailingAnchor).active = true
-        filterView.bottomAnchor.constraintEqualToAnchor(bottomLayoutGuide.topAnchor).active = true
-    }
-
-    func setupScrollingStackView(){
-        scrollView = UIScrollView()
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
-        filterView.addSubview(scrollView)
-        
-        scrollView.topAnchor.constraintEqualToAnchor(filterView.topAnchor).active = true
-        scrollView.leadingAnchor.constraintEqualToAnchor(filterView.leadingAnchor).active = true
-        scrollView.trailingAnchor.constraintEqualToAnchor(filterView.trailingAnchor).active = true
-        scrollView.bottomAnchor.constraintEqualToAnchor(filterView.bottomAnchor).active = true
-
-        stackView = UIStackView()
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.axis = .Horizontal
-        scrollView.addSubview(stackView)
-        
-        stackView.topAnchor.constraintEqualToAnchor(scrollView.topAnchor).active = true
-        stackView.leadingAnchor.constraintEqualToAnchor(scrollView.leadingAnchor).active = true
-        stackView.trailingAnchor.constraintEqualToAnchor(scrollView.trailingAnchor).active = true
-        stackView.bottomAnchor.constraintEqualToAnchor(scrollView.bottomAnchor).active = true
-
-        let filterArray = [UIColor.blueColor(), UIColor.yellowColor(), UIColor.greenColor(), UIColor.redColor()]
-        
-        for filter in filterArray {
-            let buttonButton = UIButton()
-            buttonButton.backgroundColor = filter
-            buttonButton.addTarget(self, action: #selector(self.updateTint(_:)), forControlEvents: UIControlEvents.TouchUpInside)
-            buttonButton.translatesAutoresizingMaskIntoConstraints = false
-            stackView.addArrangedSubview(buttonButton)
-            buttonButton.heightAnchor.constraintEqualToAnchor(filterView.heightAnchor).active = true
-            buttonButton.widthAnchor.constraintEqualToAnchor(buttonButton.heightAnchor).active = true
-        }
-    }
-    
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        scrollView.contentSize = CGSize(width: stackView.frame.width, height: stackView.frame.height)
-    }
-    
-    func updateTint(sender: UIButton){
-        imageView.image = thumbnail.tint(sender.backgroundColor!)
-    }
-    
-    func setupSaveButton(){
+    func setupNavBarSaveButton(){
         let rightBarButton = UIBarButtonItem(barButtonSystemItem: .Save, target: self, action: #selector(self.saveAction(_:)))
         self.navigationItem.rightBarButtonItem = rightBarButton
     }
     
     func saveAction(sender: UIBarButtonItem){
-        UIImageWriteToSavedPhotosAlbum(imageView.image!, nil, nil, nil)
-        
+        UIImageWriteToSavedPhotosAlbum(thumbnailDetailView.imageView.image!, nil, #selector(self.imageSaveCompleted(_:)), nil)
+    }
+    
+    func imageSaveCompleted(picker: UIImagePickerController) {
         let alertController = UIAlertController(title: "Image Saved", message: "success!", preferredStyle: .Alert)
         let defaultAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
         alertController.addAction(defaultAction)
         presentViewController(alertController, animated: true, completion: nil)
     }
+    
+    func updateTint(sender: UIButton){
+        thumbnailDetailView.imageView.image = thumbnailDetailView.thumbnail.tint(sender.backgroundColor!)
+    }
+    
 }
 
-extension UIImage {
-    
-    //https://gist.github.com/fabb/007d30ba0759de9be8a3
-    // colorize image with given tint color
-    // this is similar to Photoshop's "Color" layer blend mode
-    // this is perfect for non-greyscale source images, and images that have both highlights and shadows that should be preserved
-    // white will stay white and black will stay black as the lightness of the image is preserved
-    func tint(tintColor: UIColor) -> UIImage {
-        
-        return modifiedImage { context, rect in
-            // draw black background - workaround to preserve color of partially transparent pixels
-            CGContextSetBlendMode(context, .Normal)
-            UIColor.blackColor().setFill()
-            CGContextFillRect(context, rect)
-            
-            // draw original image
-            CGContextSetBlendMode(context, .Normal)
-            CGContextDrawImage(context, rect, self.CGImage)
-            
-            // tint image (loosing alpha) - the luminosity of the original image is preserved
-            CGContextSetBlendMode(context, .Color)
-            tintColor.setFill()
-            CGContextFillRect(context, rect)
-            
-            // mask by alpha values of original image
-            CGContextSetBlendMode(context, .DestinationIn)
-            CGContextDrawImage(context, rect, self.CGImage)
-        }
-    }
-    
-    // fills the alpha channel of the source image with the given color
-    // any color information except to the alpha channel will be ignored
-    func fillAlpha(fillColor: UIColor) -> UIImage {
-        
-        return modifiedImage { context, rect in
-            // draw tint color
-            CGContextSetBlendMode(context, .Normal)
-            fillColor.setFill()
-            CGContextFillRect(context, rect)
-            
-            // mask by alpha values of original image
-            CGContextSetBlendMode(context, .DestinationIn)
-            CGContextDrawImage(context, rect, self.CGImage)
-        }
-    }
-    
-    private func modifiedImage(@noescape draw: (CGContext, CGRect) -> ()) -> UIImage {
-        
-        // using scale correctly preserves retina images
-        UIGraphicsBeginImageContextWithOptions(size, false, scale)
-        let context: CGContext! = UIGraphicsGetCurrentContext()
-        assert(context != nil)
-        
-        // correctly rotate image
-        CGContextTranslateCTM(context, 0, size.height);
-        CGContextScaleCTM(context, 1.0, -1.0);
-        
-        let rect = CGRectMake(0.0, 0.0, size.width, size.height)
-        
-        draw(context, rect)
-        
-        let image = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        return image
-    }
-    
-}

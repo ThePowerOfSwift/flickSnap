@@ -41,7 +41,7 @@ class ThumbnailCollectionViewController: UIViewController, UICollectionViewDeleg
         collectionView?.bottomAnchor.constraintEqualToAnchor(bottomLayoutGuide.topAnchor).active = true
         collectionView?.leadingAnchor.constraintEqualToAnchor(view.leadingAnchor).active = true
         collectionView?.trailingAnchor.constraintEqualToAnchor(view.trailingAnchor).active = true
-        //        NSLayoutConstraint.activate([horizontalConstraint!,bottomConstraint!,leadingConstraint!,trailingConstraint!])
+//        NSLayoutConstraint.activate([horizontalConstraint!,bottomConstraint!,leadingConstraint!,trailingConstraint!])
     }
     
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -73,8 +73,7 @@ class ThumbnailCollectionViewController: UIViewController, UICollectionViewDeleg
     }
     
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
-        let vc = ThumbnailDetailViewController()
-        vc.thumbnail = thumbnailsArray[indexPath.row].image
+        let vc = ThumbnailDetailViewController(thumbnail: thumbnailsArray[indexPath.row].image!)
         navigationController?.pushViewController(vc, animated: true)
         
     }
