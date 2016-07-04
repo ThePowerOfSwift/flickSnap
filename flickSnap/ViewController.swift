@@ -2,7 +2,7 @@
 //  ViewController.swift
 //  flickSnap
 //
-//  Created by Stanley Chiang on 6/30/16.
+//  Created by Stanley Chiang on 7/4/16.
 //  Copyright © 2016 Stanley Chiang. All rights reserved.
 //
 
@@ -12,7 +12,7 @@ import AudioToolbox
 import AVFoundation
 
 class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate {
-
+    
     var motionManager:MotionManager = MotionManager()
     var angleLabel:UILabel = UILabel()
     var magnitudeLabel:UILabel = UILabel()
@@ -57,11 +57,11 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
             videoOutput.setSampleBufferDelegate(self, queue: dispatch_queue_create("sample buffer delegate", DISPATCH_QUEUE_SERIAL))
             
             captureSession.sessionPreset = AVCaptureSessionPresetPhoto
-//            captureSession.startRunning()
             if captureSession.canAddOutput(videoOutput) {
                 captureSession.addOutput(videoOutput)
             }
             if let previewLayer = AVCaptureVideoPreviewLayer(session: captureSession) {
+                print(view.bounds)
                 previewLayer.bounds = view.bounds
                 previewLayer.position = CGPointMake(view.bounds.midX, view.bounds.midY)
                 previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
@@ -110,7 +110,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     }
     
     func setupThumbnailView(){
-
+        
         view.addSubview(thumbNailGallery)
         
         thumbNailGallery.translatesAutoresizingMaskIntoConstraints = false
@@ -152,7 +152,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
             }
         }
     }
-
+    
     // get magnitude of vector via Pythagorean theorem
     func magnitudeFromAttitude(attitude: CMAttitude) -> Double {
         return sqrt(pow(attitude.roll, 2) + pow(attitude.yaw, 2) + pow(attitude.pitch, 2))
@@ -161,13 +161,13 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     func stopMotion(){
         motionManager.stopAccelerometerUpdates()
     }
-
+    
     func handleAccelerationData(dX dX:Double, dY: Double) -> Double {
         let testAngle = motionManager.convertCoordToDegrees(a: dX, b: dY)
         if useLabels {
             angleLabel.text = "\(abs(testAngle))"
         }
-
+        
         return abs(testAngle)
     }
     
@@ -214,8 +214,8 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
                     let imageView = UIImageView(image: self.imageFromSampleBuffer(sampleBuffer))
                     imageView.userInteractionEnabled = true
                     imageView.contentMode = .ScaleAspectFit
-                    imageView.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(ViewController.dragImage(_:))))
-                    imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(ViewController.thumbnailTapped(_:))))
+                    imageView.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(self.dragImage(_:))))
+                    imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.thumbnailTapped(_:))))
                     
                     self.thumbNails.append(imageView)
                     
@@ -223,7 +223,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
                     if self.thumbNails.count == self.maxThumbnails {
                         let viewAllButton = UIButton()
                         self.thumbNailGallery.addSubview(viewAllButton)
-                        viewAllButton.addTarget(self, action: #selector(ViewController.viewAllButtonTapped(_:)), forControlEvents: UIControlEvents.TouchUpInside)
+                        viewAllButton.addTarget(self, action: #selector(self.viewAllButtonTapped(_:)), forControlEvents: UIControlEvents.TouchUpInside)
                         viewAllButton.setTitle("ViewAll", forState: UIControlState.Normal)
                         viewAllButton.translatesAutoresizingMaskIntoConstraints = false
                         
@@ -277,6 +277,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     }
     
     func imageFromSampleBuffer(sampleBuffer:CMSampleBuffer!) -> UIImage {
+        //        http://stackoverflow.com/questions/8924299/ios-capturing-image-using-avframework/36031641#36031641
         let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer)!
         CVPixelBufferLockBaseAddress(imageBuffer, 0)
         
@@ -319,7 +320,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
             //detect user intension by looking at where they dragged the thumbnail; trash if dragged any part of image to left or right edge otherwise snap back
             let doesIntersectLeftEdge = thumbNailGallery.convertRect(sender.view!.frame, toView: self.view).intersects(CGRectMake(0, 0, 1, view.frame.height))
             let doesIntersectRightEdge = thumbNailGallery.convertRect(sender.view!.frame, toView: self.view).intersects(CGRectMake(view.frame.width-1, 0, 1, view.frame.height))
-
+            
             if  doesIntersectLeftEdge || doesIntersectRightEdge {
                 let removedImageIndex = thumbNails.removeObject(sender.view as! UIImageView)
                 sender.view?.removeFromSuperview()

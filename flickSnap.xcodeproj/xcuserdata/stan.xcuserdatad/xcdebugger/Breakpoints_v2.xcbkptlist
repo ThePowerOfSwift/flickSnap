@@ -9,13 +9,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "flickSnap/ViewController.swift"
-            timestampString = "489343716.034969"
+            filePath = "flickSnap/CameraView.swift"
+            timestampString = "489358384.571467"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "275"
-            endingLineNumber = "275"
-            landmarkName = "thumbnailTapped(_:)"
+            startingLineNumber = "50"
+            endingLineNumber = "50"
+            landmarkName = "layoutSubviews()"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -25,13 +25,29 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "flickSnap/ViewController.swift"
-            timestampString = "489343716.034969"
+            filePath = "flickSnap/CameraViewController.swift"
+            timestampString = "489358081.424808"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "274"
-            endingLineNumber = "274"
-            landmarkName = "thumbnailTapped(_:)"
+            startingLineNumber = "34"
+            endingLineNumber = "34"
+            landmarkName = "loadView()"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "flickSnap/CameraViewController.swift"
+            timestampString = "489357684.509916"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "33"
+            endingLineNumber = "33"
+            landmarkName = "loadView()"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

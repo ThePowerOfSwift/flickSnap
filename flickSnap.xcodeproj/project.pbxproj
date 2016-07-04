@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		F62BC0861D260D66000D17F8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62BC0851D260D66000D17F8 /* AppDelegate.swift */; };
-		F62BC0881D260D66000D17F8 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62BC0871D260D66000D17F8 /* ViewController.swift */; };
+		F62BC0881D260D66000D17F8 /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62BC0871D260D66000D17F8 /* CameraViewController.swift */; };
 		F62BC08D1D260D66000D17F8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F62BC08C1D260D66000D17F8 /* Assets.xcassets */; };
 		F62BC0901D260D66000D17F8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F62BC08E1D260D66000D17F8 /* LaunchScreen.storyboard */; };
 		F62BC0981D260EAB000D17F8 /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = F62BC0971D260EAB000D17F8 /* README.md */; };
@@ -16,6 +16,10 @@
 		F6E7FD8E1D2A3C400050BDA0 /* ThumbnailDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6E7FD8D1D2A3C400050BDA0 /* ThumbnailDetailView.swift */; };
 		F6E7FD901D2A57560050BDA0 /* ArrayExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6E7FD8F1D2A57560050BDA0 /* ArrayExtensions.swift */; };
 		F6E7FD921D2A5F9C0050BDA0 /* UIImageExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6E7FD911D2A5F9C0050BDA0 /* UIImageExtensions.swift */; };
+		F6E7FD961D2AD1470050BDA0 /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6E7FD951D2AD1470050BDA0 /* CameraView.swift */; };
+		F6E7FD981D2AD1630050BDA0 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6E7FD971D2AD1630050BDA0 /* ViewController.swift */; };
+		F6E7FD9B1D2ADF820050BDA0 /* CMMotionManagerExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6E7FD9A1D2ADF820050BDA0 /* CMMotionManagerExtensions.swift */; };
+		F6E7FD9D1D2AE7510050BDA0 /* CGRectExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6E7FD9C1D2AE7510050BDA0 /* CGRectExtensions.swift */; };
 		F6F51DA61D289B3100054A8E /* ThumbnailCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6F51DA51D289B3100054A8E /* ThumbnailCollectionViewController.swift */; };
 		F6F51DAA1D28A9A100054A8E /* ThumbnailDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6F51DA91D28A9A100054A8E /* ThumbnailDetailViewController.swift */; };
 /* End PBXBuildFile section */
@@ -23,7 +27,7 @@
 /* Begin PBXFileReference section */
 		F62BC0821D260D66000D17F8 /* flickSnap.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = flickSnap.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F62BC0851D260D66000D17F8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		F62BC0871D260D66000D17F8 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		F62BC0871D260D66000D17F8 /* CameraViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
 		F62BC08C1D260D66000D17F8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F62BC08F1D260D66000D17F8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		F62BC0911D260D66000D17F8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -32,6 +36,10 @@
 		F6E7FD8D1D2A3C400050BDA0 /* ThumbnailDetailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThumbnailDetailView.swift; sourceTree = "<group>"; };
 		F6E7FD8F1D2A57560050BDA0 /* ArrayExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArrayExtensions.swift; sourceTree = "<group>"; };
 		F6E7FD911D2A5F9C0050BDA0 /* UIImageExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIImageExtensions.swift; sourceTree = "<group>"; };
+		F6E7FD951D2AD1470050BDA0 /* CameraView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
+		F6E7FD971D2AD1630050BDA0 /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		F6E7FD9A1D2ADF820050BDA0 /* CMMotionManagerExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CMMotionManagerExtensions.swift; sourceTree = "<group>"; };
+		F6E7FD9C1D2AE7510050BDA0 /* CGRectExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CGRectExtensions.swift; sourceTree = "<group>"; };
 		F6F51DA51D289B3100054A8E /* ThumbnailCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThumbnailCollectionViewController.swift; sourceTree = "<group>"; };
 		F6F51DA91D28A9A100054A8E /* ThumbnailDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThumbnailDetailViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -67,7 +75,8 @@
 			isa = PBXGroup;
 			children = (
 				F62BC0851D260D66000D17F8 /* AppDelegate.swift */,
-				F62BC0871D260D66000D17F8 /* ViewController.swift */,
+				F6E7FD991D2AD35E0050BDA0 /* Camera */,
+				F6E7FD971D2AD1630050BDA0 /* ViewController.swift */,
 				F6F51DA51D289B3100054A8E /* ThumbnailCollectionViewController.swift */,
 				F6E7FD931D2A62640050BDA0 /* ThumbnailDetail */,
 				F6E7FD941D2A62860050BDA0 /* Extensions */,
@@ -91,11 +100,22 @@
 		F6E7FD941D2A62860050BDA0 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				F6E7FD9A1D2ADF820050BDA0 /* CMMotionManagerExtensions.swift */,
 				F6E7FD8F1D2A57560050BDA0 /* ArrayExtensions.swift */,
 				F6E7FD911D2A5F9C0050BDA0 /* UIImageExtensions.swift */,
 				F62BC0991D26112A000D17F8 /* MotionManager.swift */,
+				F6E7FD9C1D2AE7510050BDA0 /* CGRectExtensions.swift */,
 			);
 			name = Extensions;
+			sourceTree = "<group>";
+		};
+		F6E7FD991D2AD35E0050BDA0 /* Camera */ = {
+			isa = PBXGroup;
+			children = (
+				F62BC0871D260D66000D17F8 /* CameraViewController.swift */,
+				F6E7FD951D2AD1470050BDA0 /* CameraView.swift */,
+			);
+			name = Camera;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -173,11 +193,15 @@
 				F62BC0981D260EAB000D17F8 /* README.md in Sources */,
 				F6F51DAA1D28A9A100054A8E /* ThumbnailDetailViewController.swift in Sources */,
 				F6E7FD8E1D2A3C400050BDA0 /* ThumbnailDetailView.swift in Sources */,
+				F6E7FD9B1D2ADF820050BDA0 /* CMMotionManagerExtensions.swift in Sources */,
+				F6E7FD981D2AD1630050BDA0 /* ViewController.swift in Sources */,
 				F6E7FD901D2A57560050BDA0 /* ArrayExtensions.swift in Sources */,
-				F62BC0881D260D66000D17F8 /* ViewController.swift in Sources */,
+				F62BC0881D260D66000D17F8 /* CameraViewController.swift in Sources */,
 				F6F51DA61D289B3100054A8E /* ThumbnailCollectionViewController.swift in Sources */,
 				F62BC0861D260D66000D17F8 /* AppDelegate.swift in Sources */,
 				F62BC09A1D26112A000D17F8 /* MotionManager.swift in Sources */,
+				F6E7FD9D1D2AE7510050BDA0 /* CGRectExtensions.swift in Sources */,
+				F6E7FD961D2AD1470050BDA0 /* CameraView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
