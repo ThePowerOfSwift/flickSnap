@@ -92,14 +92,21 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
             magnitudeLabel.text = "attitudeLabel"
             magnitudeLabel.backgroundColor = UIColor.lightGrayColor()
         }
-        
-        processMotion()
     }
     
     override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
         //sets the navbar behind the preview layer
         self.navigationController!.navigationBar.layer.zPosition = -1
         captureSession.startRunning()
+        processMotion()
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        self.navigationController!.navigationBar.layer.zPosition = 0
+        captureSession.stopRunning()
+        motionManager.stopDeviceMotionUpdates()
     }
     
     func setupThumbnailView(){

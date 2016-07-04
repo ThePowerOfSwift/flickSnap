@@ -16,12 +16,21 @@ class ThumbnailCollectionViewController: UIViewController, UICollectionViewDeleg
     override func viewDidLoad() {
         super.viewDidLoad()
         //returns the navbar to the top layer so that user can access back button
-        self.navigationController!.navigationBar.layer.zPosition = 0
-        view.backgroundColor = UIColor.orangeColor()
+        view.backgroundColor = UIColor.cyanColor()
         addCollectionView()
     }
     
-    // MARK: UICollectionViewDataSource
+    override func viewWillAppear(animated: Bool) {
+        edgesForExtendedLayout = UIRectEdge.None
+    }
+
+    override func viewDidLayoutSubviews() {
+        collectionView?.topAnchor.constraintEqualToAnchor(topLayoutGuide.bottomAnchor).active = true
+        collectionView?.bottomAnchor.constraintEqualToAnchor(bottomLayoutGuide.topAnchor).active = true
+        collectionView?.leadingAnchor.constraintEqualToAnchor(view.leadingAnchor).active = true
+        collectionView?.trailingAnchor.constraintEqualToAnchor(view.trailingAnchor).active = true
+
+    }
     
     func addCollectionView() {
         let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
@@ -33,16 +42,9 @@ class ThumbnailCollectionViewController: UIViewController, UICollectionViewDeleg
         collectionView?.registerClass(UICollectionViewCell.self, forCellWithReuseIdentifier: "Cell")
         collectionView?.backgroundColor = UIColor.cyanColor()
         view.addSubview(collectionView!)
-        addCollectionViewConstraints()
     }
     
-    func addCollectionViewConstraints() {
-        collectionView?.topAnchor.constraintEqualToAnchor(topLayoutGuide.bottomAnchor).active = true
-        collectionView?.bottomAnchor.constraintEqualToAnchor(bottomLayoutGuide.topAnchor).active = true
-        collectionView?.leadingAnchor.constraintEqualToAnchor(view.leadingAnchor).active = true
-        collectionView?.trailingAnchor.constraintEqualToAnchor(view.trailingAnchor).active = true
-//        NSLayoutConstraint.activate([horizontalConstraint!,bottomConstraint!,leadingConstraint!,trailingConstraint!])
-    }
+    // MARK: UICollectionViewDataSource
     
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return thumbnailsArray.count
@@ -50,13 +52,12 @@ class ThumbnailCollectionViewController: UIViewController, UICollectionViewDeleg
     
     func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
         
-        let sideLength = self.view.frame.width / 2.0
+        let sideLength = self.view.frame.width / 2.0 - 10
         return CGSize(width: sideLength, height: sideLength)
     }
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("Cell", forIndexPath: indexPath)
-        
         
         let image:UIImage = thumbnailsArray[indexPath.row].image!
         let imageView:UIImageView = UIImageView(image: image)

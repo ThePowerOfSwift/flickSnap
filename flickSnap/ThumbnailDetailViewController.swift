@@ -27,7 +27,6 @@ class ThumbnailDetailViewController: UIViewController {
     }
     
     override func viewDidLoad() {
-        self.navigationController!.navigationBar.layer.zPosition = 0
         setupNavBarSaveButton()
     }
     
