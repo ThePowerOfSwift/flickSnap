@@ -27,10 +27,18 @@ class CameraView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         thumbNailGallery = ThumbnailGalleryView()
+        addSubview(thumbNailGallery)
     }
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func layoutSubviews() {
+        thumbNailGallery.leadingAnchor.constraintEqualToAnchor(self.superview!.leadingAnchor).active = true
+        thumbNailGallery.trailingAnchor.constraintEqualToAnchor(self.superview!.trailingAnchor).active = true
+        thumbNailGallery.bottomAnchor.constraintEqualToAnchor(self.superview!.bottomAnchor, constant: -10).active = true
+        thumbNailGallery.heightAnchor.constraintEqualToConstant(100).active = true
     }
     
     func setPreviewLayer(){

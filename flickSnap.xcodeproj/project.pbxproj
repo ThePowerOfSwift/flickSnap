@@ -40,7 +40,6 @@
 		F6E7FD8F1D2A57560050BDA0 /* ArrayExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArrayExtensions.swift; sourceTree = "<group>"; };
 		F6E7FD911D2A5F9C0050BDA0 /* UIImageExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIImageExtensions.swift; sourceTree = "<group>"; };
 		F6E7FD951D2AD1470050BDA0 /* CameraView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
-		F6E7FD971D2AD1630050BDA0 /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		F6E7FD9A1D2ADF820050BDA0 /* CMMotionManagerExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CMMotionManagerExtensions.swift; sourceTree = "<group>"; };
 		F6E7FD9C1D2AE7510050BDA0 /* CGRectExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CGRectExtensions.swift; sourceTree = "<group>"; };
 		F6E7FD9E1D2B06270050BDA0 /* ThumbnailImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThumbnailImageView.swift; sourceTree = "<group>"; };
@@ -83,7 +82,6 @@
 			children = (
 				F62BC0851D260D66000D17F8 /* AppDelegate.swift */,
 				F6E7FD991D2AD35E0050BDA0 /* Camera */,
-				F6E7FD971D2AD1630050BDA0 /* ViewController.swift */,
 				F6E7FDA01D2B25BD0050BDA0 /* ThumbnailCollection */,
 				F6E7FD931D2A62640050BDA0 /* ThumbnailDetail */,
 				F6E7FD941D2A62860050BDA0 /* Helpers */,

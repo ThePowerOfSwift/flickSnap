@@ -116,9 +116,7 @@ class CameraViewController: UIViewController, CameraViewControllerDelegate, AVCa
                     }
                     print("take photo")
                     let image = sampleBuffer.imageFromSampleBuffer()
-//                    (self.view as! CameraView).addThumbnailImage(image)
                     self.thumbNails.append(image)
-                    
                     var imagesarray = (self.view as! CameraView).thumbNailGallery.thumbnailGalleryImageViewArray
                     
                     if self.thumbNails.count == 1 {

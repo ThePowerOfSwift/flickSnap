@@ -27,12 +27,12 @@ class ThumbnailImageView: UIImageView, Draggable, Tappable {
     }
 
     
-    override func layoutSubviews() {
-        leadingAnchor.constraintEqualToAnchor(self.superview!.leadingAnchor, constant: 10).active = true
-        topAnchor.constraintEqualToAnchor(self.superview!.topAnchor).active = true
-        bottomAnchor.constraintEqualToAnchor(self.superview!.bottomAnchor).active = true
-        widthAnchor.constraintEqualToAnchor(self.superview!.heightAnchor).active = true
-    }
+//    override func layoutSubviews() {
+//        leadingAnchor.constraintEqualToAnchor(self.superview!.leadingAnchor, constant: 10).active = true
+//        topAnchor.constraintEqualToAnchor(self.superview!.topAnchor).active = true
+//        bottomAnchor.constraintEqualToAnchor(self.superview!.bottomAnchor).active = true
+//        widthAnchor.constraintEqualToAnchor(self.superview!.heightAnchor).active = true
+//    }
     
     func dragImage(sender: UIPanGestureRecognizer) {
         if initialPosition == nil {

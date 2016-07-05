@@ -11,24 +11,30 @@ import UIKit
 class ThumbnailGalleryView: UIView {
     
     var thumbnailGalleryImageViewArray = [ThumbnailImageView]()
-    
     override init(frame: CGRect) {
         super.init(frame: frame)
+        backgroundColor = UIColor.cyanColor()
         translatesAutoresizingMaskIntoConstraints = false
+        
         for _ in 1 ... determineMaxThumbnails() - 1 {
-            let imageView = ThumbnailImageView(frame: CGRectMake(0, 0, 50, 50))
+            let imageView = ThumbnailImageView(frame: CGRectZero)
             imageView.translatesAutoresizingMaskIntoConstraints = false
             addSubview(imageView)
             thumbnailGalleryImageViewArray.append(imageView)
-//            imageView.layoutSubviews()
         }
     }
     
     override func layoutSubviews() {
-        leadingAnchor.constraintEqualToAnchor(self.superview!.leadingAnchor).active = true
-        trailingAnchor.constraintEqualToAnchor(self.superview!.trailingAnchor).active = true
-        bottomAnchor.constraintEqualToAnchor(self.superview!.bottomAnchor, constant: -10).active = true
-        heightAnchor.constraintEqualToConstant(100).active = true
+        for (index, tn) in thumbnailGalleryImageViewArray.enumerate() {
+            if index == 0 {
+                tn.leadingAnchor.constraintEqualToAnchor(tn.superview!.leadingAnchor, constant: 10).active = true
+            }else {
+                tn.leadingAnchor.constraintEqualToAnchor((thumbnailGalleryImageViewArray[index - 1] as ThumbnailImageView).trailingAnchor, constant: 10).active = true
+            }
+            tn.topAnchor.constraintEqualToAnchor(tn.superview!.topAnchor).active = true
+            tn.bottomAnchor.constraintEqualToAnchor(tn.superview!.bottomAnchor).active = true
+            tn.widthAnchor.constraintEqualToAnchor(tn.superview!.heightAnchor).active = true
+        }
     }
     
     required init?(coder aDecoder: NSCoder) {
