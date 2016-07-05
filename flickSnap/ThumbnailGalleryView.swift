@@ -35,6 +35,7 @@ class ThumbnailGalleryView: UIView {
         viewallButton.alpha = 0
         addSubview(viewallButton)
         
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.removeImage(_:)), name: "imageRemoved", object: nil)
     }
     
     override func layoutSubviews() {
@@ -78,6 +79,10 @@ class ThumbnailGalleryView: UIView {
         vc.thumbnailsArray = appDelegate.thumbNails
         appDelegate.navigationController.pushViewController(vc, animated: true)
         print("open collection view")
+    }
+    
+    func removeImage(sender: NSNotification){
+        print("remove from gallery")
     }
     
 }

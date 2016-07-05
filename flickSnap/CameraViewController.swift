@@ -31,6 +31,10 @@ class CameraViewController: UIViewController, CameraViewControllerDelegate, AVCa
 
     }
     
+    override func viewDidLoad() {
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.removeImage(_:)), name: "imageRemoved", object: nil)
+    }
+    
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController!.navigationBar.layer.zPosition = -1
@@ -127,6 +131,10 @@ class CameraViewController: UIViewController, CameraViewControllerDelegate, AVCa
         }else {
             self.faceDetected = false
         }
+    }
+    
+    func removeImage(sender: NSNotification){
+        print("remove from camera vc")
     }
     
     func processMotion() {

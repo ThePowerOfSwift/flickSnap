@@ -27,8 +27,10 @@ extension Draggable where Self:UIImageView {
             let doesIntersectRightEdge = self.superview!.convertRect(sender.view!.frame, toView: sender.view?.superview?.superview).intersects(CGRectMake(UIScreen.mainScreen().bounds.width-1, 0, 1, UIScreen.mainScreen().bounds.height))
             
             if doesIntersectLeftEdge || doesIntersectRightEdge {
+                NSNotificationCenter.defaultCenter().postNotificationName("imageRemoved", object: (sender.view as? UIImageView)!.image)
                 (sender.view as? UIImageView)!.image = nil
                 sender.view!.frame.origin = initialPosition!
+                
             }else {
                 UIView.animateWithDuration(0.24) { () -> Void in
                     sender.view!.frame.origin = initialPosition!
