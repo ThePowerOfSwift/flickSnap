@@ -12,8 +12,6 @@ import CoreMotion
 
 class CameraViewController: UIViewController, CameraViewControllerDelegate, AVCaptureVideoDataOutputSampleBufferDelegate {
     
-//    var cameraview: CameraView!
-    
     let captureSession = AVCaptureSession()
     let stillImageOutput = AVCaptureStillImageOutput()
     var previewLayer:AVCaptureVideoPreviewLayer?
@@ -104,82 +102,42 @@ class CameraViewController: UIViewController, CameraViewControllerDelegate, AVCa
         if results.count > 0 {
             faceDetected = true
             let face:CIFaceFeature = results.firstObject as! CIFaceFeature
-            print("face found at \(face.bounds.origin.x),\(face.bounds.origin.y) of dimensions \(face.bounds.width)x\(face.bounds.height)")
+//            print("face found at \(face.bounds.origin.x),\(face.bounds.origin.y) of dimensions \(face.bounds.width)x\(face.bounds.height)")
             
             if vibrated {
-                self.vibrated = false
-                AudioServicesPlaySystemSound(1108)
                 dispatch_async(dispatch_get_main_queue()){
                     if self.captureDevice.focusPointOfInterestSupported{
                         self.captureDevice.focusPointOfInterest = self.previewLayer!.captureDevicePointOfInterestForPoint(face.calculateFaceCenter(face.bounds))
                         self.captureDevice.focusMode = .AutoFocus
                     }
-                    print("take photo")
                     let image = sampleBuffer.imageFromSampleBuffer()
                     self.thumbNails.append(image)
+                    AudioServicesPlaySystemSound(1108)
+                    
+                    let tnGallery = (self.view as! CameraView).thumbNailGallery
                     var imagesarray = (self.view as! CameraView).thumbNailGallery.thumbnailGalleryImageViewArray
                     
-                    if self.thumbNails.count == 1 {
-                        imagesarray[0].image = image
-                        imagesarray[0].layoutSubviews()
+                    if self.thumbNails.count < tnGallery.maxThumbnails {
+                        for (index, _) in self.thumbNails.enumerate() {
+                            imagesarray[index].image = self.thumbNails[index]
+                        }
+                    }else {
+                        tnGallery.viewallButton.alpha = 1
+                        
+                        imagesarray[imagesarray.count - 2].image = self.thumbNails[self.thumbNails.count - 2]
+                        imagesarray[imagesarray.count - 1].image = self.thumbNails[self.thumbNails.count - 1]
                     }
                     
                     print("added image")
                 }
+                self.vibrated = false
             }
         }else {
-            print("no face detected")
             self.faceDetected = false
         }
     }
     
     func viewAllButtonTapped(sender: UIButton){
-        let vc = ThumbnailCollectionViewController()
-        vc.thumbnailsArray = thumbNails
-        navigationController?.pushViewController(vc, animated: true)
-    }
-    
-    func didDragThumbnailImageView(sender: UIPanGestureRecognizer) {
-        return
-//        if TNImageView.initialPosition == nil {
-//            TNImageView.initialPosition = sender.view!.frame.origin
-//        }
-//        
-//        if sender.state == UIGestureRecognizerState.Began || sender.state == UIGestureRecognizerState.Changed {
-//            let translation = sender.translationInView(self.view)
-//            sender.view!.center = CGPointMake(sender.view!.center.x + translation.x, sender.view!.center.y + translation.y)
-//            sender.setTranslation(CGPointMake(0,0), inView: self.view)
-//        }
-//        
-//        if sender.state == .Ended {
-//            //detect user intension by looking at where they dragged the thumbnail; trash if dragged any part of image to left or right edge otherwise snap back
-//            let doesIntersectLeftEdge = TNImageView.superview!.convertRect(sender.view!.frame, toView: self.view).intersects(CGRectMake(0, 0, 1, view.frame.height))
-//            let doesIntersectRightEdge = TNImageView.superview!.convertRect(sender.view!.frame, toView: self.view).intersects(CGRectMake(view.frame.width-1, 0, 1, view.frame.height))
-//            
-//            if  doesIntersectLeftEdge || doesIntersectRightEdge {
-//                let removedImageIndex = thumbNails.removeObject(TNImageView.image!)
-//                sender.view?.removeFromSuperview()
-//                
-//                //need to reset the leading constraint of the images arranged to the right of the image removed
-//                //if new image that takes over the old index is 0 then set its leading constraint to the main view's leading edge otherwise set new image at removed index position to the image to its left
-//                //but don't do any constraint updates if removing from the end
-//                if removedImageIndex! != thumbNails.count {
-////                    if removedImageIndex! == 0 {
-////                        //then this image is the first thumbnail
-////                        self.thumbNails[removedImageIndex!].leadingAnchor.constraintEqualToAnchor(self.thumbNailGallery.leadingAnchor, constant: 10).active = true
-////                    } else {
-////                        self.thumbNails[removedImageIndex!].leadingAnchor.constraintEqualToAnchor(self.thumbNails[removedImageIndex! - 1].trailingAnchor, constant: 10).active = true
-////                    }
-//                }
-//                
-//            }else {
-//                //snap back to original spot
-//                UIView.animateWithDuration(0.2) { () -> Void in
-//                    sender.view!.frame.origin = TNImageView.initialPosition!
-//                    TNImageView.initialPosition = nil
-//                }
-//            }
-//        }
     }
     
     func processMotion() {

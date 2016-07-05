@@ -12,8 +12,4 @@
 - ~~load collection view to allow preview of images~~
 - ~~add photo editing features like filters when in collectionview detail~~
 - ~~pause camera functionality when in collection view~~
-- only show the most recently taken images in thumbnails; push the old images off the left side
-- bug: with thumbnail previews sometimes view all causes crashes
-
-##Not needed?
-- add reset initial core motion attitude button on preview layer
+- ~~only show the most recently taken images in thumbnails; push the old images off the left side~~

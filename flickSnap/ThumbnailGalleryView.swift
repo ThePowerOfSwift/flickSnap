@@ -11,17 +11,31 @@ import UIKit
 class ThumbnailGalleryView: UIView {
     
     var thumbnailGalleryImageViewArray = [ThumbnailImageView]()
+    var maxThumbnails:Int!
+    
+    let viewallButton = UIButton()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = UIColor.cyanColor()
         translatesAutoresizingMaskIntoConstraints = false
         
-        for _ in 1 ... determineMaxThumbnails() - 1 {
+        maxThumbnails = determineMaxThumbnails()
+        
+        for _ in 1 ... maxThumbnails - 1 {
             let imageView = ThumbnailImageView(frame: CGRectZero)
             imageView.translatesAutoresizingMaskIntoConstraints = false
             addSubview(imageView)
             thumbnailGalleryImageViewArray.append(imageView)
         }
+        
+        
+        viewallButton.translatesAutoresizingMaskIntoConstraints = false
+        viewallButton.addTarget(self, action: #selector(self.viewallButtonTapped(_:)), forControlEvents: UIControlEvents.TouchUpInside)
+        viewallButton.setTitle("View All", forState: UIControlState.Normal)
+        viewallButton.alpha = 0
+        addSubview(viewallButton)
+        
     }
     
     override func layoutSubviews() {
@@ -34,6 +48,14 @@ class ThumbnailGalleryView: UIView {
             tn.topAnchor.constraintEqualToAnchor(tn.superview!.topAnchor).active = true
             tn.bottomAnchor.constraintEqualToAnchor(tn.superview!.bottomAnchor).active = true
             tn.widthAnchor.constraintEqualToAnchor(tn.superview!.heightAnchor).active = true
+            
+            if index == thumbnailGalleryImageViewArray.count - 1 {
+                viewallButton.leadingAnchor.constraintEqualToAnchor((thumbnailGalleryImageViewArray[index] as ThumbnailImageView).trailingAnchor, constant: 10).active = true
+                viewallButton.topAnchor.constraintEqualToAnchor(viewallButton.superview!.topAnchor).active = true
+                viewallButton.bottomAnchor.constraintEqualToAnchor(viewallButton.superview!.bottomAnchor).active = true
+                viewallButton.widthAnchor.constraintEqualToAnchor(viewallButton.superview!.heightAnchor).active = true
+                
+            }
         }
     }
     
@@ -51,4 +73,8 @@ class ThumbnailGalleryView: UIView {
         return maxThumbnailCount
     }
 
+    func viewallButtonTapped(sender: UIButton){
+        print("open collection view")
+    }
+    
 }
