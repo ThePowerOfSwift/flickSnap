@@ -10,7 +10,7 @@ import UIKit
 
 class ThumbnailCollectionViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
-    var thumbnailsArray:[UIImageView]!
+    var thumbnailsArray:[UIImage]!
     var collectionView: UICollectionView?
     
     override func viewDidLoad() {
@@ -59,7 +59,7 @@ class ThumbnailCollectionViewController: UIViewController, UICollectionViewDeleg
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("Cell", forIndexPath: indexPath)
         
-        let image:UIImage = thumbnailsArray[indexPath.row].image!
+        let image:UIImage = thumbnailsArray[indexPath.row]
         let imageView:UIImageView = UIImageView(image: image)
         imageView.contentMode = .ScaleAspectFit
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -74,7 +74,7 @@ class ThumbnailCollectionViewController: UIViewController, UICollectionViewDeleg
     }
     
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
-        let vc = ThumbnailDetailViewController(thumbnail: thumbnailsArray[indexPath.row].image!)
+        let vc = ThumbnailDetailViewController(thumbnail: thumbnailsArray[indexPath.row])
         navigationController?.pushViewController(vc, animated: true)
         
     }

@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreMedia
 
 extension UIImage {
     
@@ -73,5 +74,30 @@ extension UIImage {
         UIGraphicsEndImageContext()
         return image
     }
-    
+
+}
+
+extension CMSampleBuffer {
+    //        http://stackoverflow.com/questions/8924299/ios-capturing-image-using-avframework/36031641#36031641
+    func imageFromSampleBuffer() -> UIImage {
+        let imageBuffer = CMSampleBufferGetImageBuffer(self)!
+        CVPixelBufferLockBaseAddress(imageBuffer, 0)
+        
+        let baseAddress = CVPixelBufferGetBaseAddress(imageBuffer)
+        let bytesPerRow = CVPixelBufferGetBytesPerRow(imageBuffer)
+        let width = CVPixelBufferGetWidth(imageBuffer)
+        let height = CVPixelBufferGetHeight(imageBuffer)
+        
+        let colorSpace = CGColorSpaceCreateDeviceRGB()
+        
+        let bitmapInfo:CGBitmapInfo = [.ByteOrder32Little, CGBitmapInfo(rawValue: CGImageAlphaInfo.PremultipliedFirst.rawValue)]
+        let context = CGBitmapContextCreate(baseAddress, width, height, 8, bytesPerRow, colorSpace, bitmapInfo.rawValue)
+        
+        let quartzImage = CGBitmapContextCreateImage(context)
+        CVPixelBufferUnlockBaseAddress(imageBuffer, 0)
+        
+        let image = UIImage(CGImage: quartzImage!)
+        return image
+    }
+
 }

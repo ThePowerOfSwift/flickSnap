@@ -10,7 +10,6 @@ import UIKit
 import AVFoundation
 
 protocol CameraViewControllerDelegate {
-    func determineMaxThumbnails() -> Int
     func createPreviewLayer() -> (CGRect?, AVCaptureVideoPreviewLayer?)
 }
 
@@ -19,7 +18,7 @@ class CameraView: UIView {
     var delegate:CameraViewControllerDelegate?
     
     var thumbNails = [UIImageView]()
-    var thumbNailGallery = UIView()
+    var thumbNailGallery:ThumbnailGalleryView!
     var cameraPreview = UIView()
     var maxThumbnails:Int!
     var initialPosition:CGPoint?
@@ -27,13 +26,13 @@ class CameraView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        setupThumbnailView()
+        thumbNailGallery = ThumbnailGalleryView()
     }
-    
+
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
+    
     func setPreviewLayer(){
         let tuple = (delegate?.createPreviewLayer())!
         let bounds = tuple.0
@@ -44,19 +43,6 @@ class CameraView: UIView {
         let cameraPreview = UIView(frame: CGRectMake(0.0, 0.0, bounds!.size.width, bounds!.size.height))
         cameraPreview.layer.addSublayer(previewLayer)
         insertSubview(cameraPreview, belowSubview: thumbNailGallery)
-    }
-    
-    override func layoutSubviews() {
-        thumbNailGallery.leadingAnchor.constraintEqualToAnchor(leadingAnchor).active = true
-        thumbNailGallery.trailingAnchor.constraintEqualToAnchor(trailingAnchor).active = true
-        thumbNailGallery.bottomAnchor.constraintEqualToAnchor(bottomAnchor, constant: -10).active = true
-        thumbNailGallery.heightAnchor.constraintEqualToConstant(100).active = true
-    }
-    
-    func setupThumbnailView(){
-        thumbNailGallery.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(thumbNailGallery)
-        maxThumbnails = delegate?.determineMaxThumbnails()
     }
     
     func useTestLabels() {
@@ -78,5 +64,5 @@ class CameraView: UIView {
         magnitudeLabel.text = "attitudeLabel"
         magnitudeLabel.backgroundColor = UIColor.lightGrayColor()
     }
-
+    
 }

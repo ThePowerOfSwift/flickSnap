@@ -11,6 +11,13 @@ import CoreMotion
 import AudioToolbox
 import AVFoundation
 
+
+//note: deprecated - for reference only
+//note: deprecated - for reference only
+//note: deprecated - for reference only
+//note: deprecated - for reference only
+//note: deprecated - for reference only
+//note: deprecated - for reference only
 class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate {
     
     var motionManager:MotionManager = MotionManager()
@@ -61,7 +68,6 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
                 captureSession.addOutput(videoOutput)
             }
             if let previewLayer = AVCaptureVideoPreviewLayer(session: captureSession) {
-                print(view.bounds)
                 previewLayer.bounds = view.bounds
                 previewLayer.position = CGPointMake(view.bounds.midX, view.bounds.midY)
                 previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
@@ -247,14 +253,6 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
                         self.thumbNails.last?.bottomAnchor.constraintEqualToAnchor(self.thumbNailGallery.bottomAnchor).active = true
                         self.thumbNails.last?.widthAnchor.constraintEqualToAnchor(self.thumbNailGallery.heightAnchor).active = true
                     }
-                    
-                    //update thumbnails shown with only the most recent images, pushing old images out of view
-                    
-                    if self.thumbNails.count >= self.maxThumbnails {
-                        print("update thumbnails")
-                        
-                    }
-                    
                 }
             }
         }else {
