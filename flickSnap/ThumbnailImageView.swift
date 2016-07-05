@@ -13,8 +13,6 @@ class ThumbnailImageView: UIImageView, Draggable, Tappable {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        layer.borderColor = UIColor.redColor().CGColor
-        layer.borderWidth = 2
         translatesAutoresizingMaskIntoConstraints = false
         userInteractionEnabled = true
         contentMode = .ScaleAspectFit

@@ -18,8 +18,6 @@ class CameraViewController: UIViewController, CameraViewControllerDelegate, AVCa
     var captureDevice:AVCaptureDevice!
     var error: NSError?
 
-    var thumbNails = [UIImage]()
-    
     let motionManager = CMMotionManager()
     var vibrated = false
     var faceDetected:Bool = true
@@ -45,16 +43,6 @@ class CameraViewController: UIViewController, CameraViewControllerDelegate, AVCa
         self.navigationController!.navigationBar.layer.zPosition = 0
         captureSession.stopRunning()
         motionManager.stopDeviceMotionUpdates()
-    }
-    
-    func determineMaxThumbnails() -> Int {
-        let mainViewWidth = Int(self.view.frame.width)
-        let imageWidth = 100
-        let imageLeadPadding = 10
-        let fullImageWidth = Int(imageWidth + imageLeadPadding)
-        let maxThumbnailCount:Int = mainViewWidth / fullImageWidth
-        print(maxThumbnailCount)
-        return maxThumbnailCount
     }
     
     func createPreviewLayer() -> (CGRect?, AVCaptureVideoPreviewLayer?) {
@@ -110,22 +98,26 @@ class CameraViewController: UIViewController, CameraViewControllerDelegate, AVCa
                         self.captureDevice.focusPointOfInterest = self.previewLayer!.captureDevicePointOfInterestForPoint(face.calculateFaceCenter(face.bounds))
                         self.captureDevice.focusMode = .AutoFocus
                     }
+                    
+                    let appDelegate:AppDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
                     let image = sampleBuffer.imageFromSampleBuffer()
-                    self.thumbNails.append(image)
+                    
+                    appDelegate.thumbNails.append(image)
+                    print(appDelegate.thumbNails.count)
                     AudioServicesPlaySystemSound(1108)
                     
                     let tnGallery = (self.view as! CameraView).thumbNailGallery
                     var imagesarray = (self.view as! CameraView).thumbNailGallery.thumbnailGalleryImageViewArray
                     
-                    if self.thumbNails.count < tnGallery.maxThumbnails {
-                        for (index, _) in self.thumbNails.enumerate() {
-                            imagesarray[index].image = self.thumbNails[index]
+                    if appDelegate.thumbNails.count < tnGallery.maxThumbnails {
+                        for (index, _) in appDelegate.thumbNails.enumerate() {
+                            imagesarray[index].image = appDelegate.thumbNails[index]
                         }
                     }else {
                         tnGallery.viewallButton.alpha = 1
                         
-                        imagesarray[imagesarray.count - 2].image = self.thumbNails[self.thumbNails.count - 2]
-                        imagesarray[imagesarray.count - 1].image = self.thumbNails[self.thumbNails.count - 1]
+                        imagesarray[imagesarray.count - 2].image = appDelegate.thumbNails[appDelegate.thumbNails.count - 2]
+                        imagesarray[imagesarray.count - 1].image = appDelegate.thumbNails[appDelegate.thumbNails.count - 1]
                     }
                     
                     print("added image")
@@ -135,9 +127,6 @@ class CameraViewController: UIViewController, CameraViewControllerDelegate, AVCa
         }else {
             self.faceDetected = false
         }
-    }
-    
-    func viewAllButtonTapped(sender: UIButton){
     }
     
     func processMotion() {

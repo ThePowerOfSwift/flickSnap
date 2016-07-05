@@ -17,7 +17,6 @@ class ThumbnailGalleryView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = UIColor.cyanColor()
         translatesAutoresizingMaskIntoConstraints = false
         
         maxThumbnails = determineMaxThumbnails()
@@ -74,6 +73,10 @@ class ThumbnailGalleryView: UIView {
     }
 
     func viewallButtonTapped(sender: UIButton){
+        let vc = ThumbnailCollectionViewController()
+        let appDelegate:AppDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        vc.thumbnailsArray = appDelegate.thumbNails
+        appDelegate.navigationController.pushViewController(vc, animated: true)
         print("open collection view")
     }
     
