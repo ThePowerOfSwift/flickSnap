@@ -12,6 +12,7 @@ import CoreMotion
 
 class CameraViewController: UIViewController, CameraViewControllerDelegate, AVCaptureVideoDataOutputSampleBufferDelegate {
     
+    let appDelegate:AppDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     let captureSession = AVCaptureSession()
     let stillImageOutput = AVCaptureStillImageOutput()
     var previewLayer:AVCaptureVideoPreviewLayer?
@@ -103,26 +104,13 @@ class CameraViewController: UIViewController, CameraViewControllerDelegate, AVCa
                         self.captureDevice.focusMode = .AutoFocus
                     }
                     
-                    let appDelegate:AppDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
                     let image = sampleBuffer.imageFromSampleBuffer()
                     
-                    appDelegate.thumbNails.append(image)
-                    print(appDelegate.thumbNails.count)
+                    self.appDelegate.thumbNails.append(image)
+                    print(self.appDelegate.thumbNails.count)
                     AudioServicesPlaySystemSound(1108)
                     
-                    let tnGallery = (self.view as! CameraView).thumbNailGallery
-                    var imagesarray = (self.view as! CameraView).thumbNailGallery.thumbnailGalleryImageViewArray
-                    
-                    if appDelegate.thumbNails.count < tnGallery.maxThumbnails {
-                        for (index, _) in appDelegate.thumbNails.enumerate() {
-                            imagesarray[index].image = appDelegate.thumbNails[index]
-                        }
-                    }else {
-                        tnGallery.viewallButton.alpha = 1
-                        
-                        imagesarray[imagesarray.count - 2].image = appDelegate.thumbNails[appDelegate.thumbNails.count - 2]
-                        imagesarray[imagesarray.count - 1].image = appDelegate.thumbNails[appDelegate.thumbNails.count - 1]
-                    }
+                    self.updateGallery()
                     
                     print("added image")
                 }
@@ -133,8 +121,31 @@ class CameraViewController: UIViewController, CameraViewControllerDelegate, AVCa
         }
     }
     
+    func updateGallery(){
+        let tnGallery = (self.view as! CameraView).thumbNailGallery
+        var imagesarray = (self.view as! CameraView).thumbNailGallery.thumbnailGalleryImageViewArray
+
+        if self.appDelegate.thumbNails.count < tnGallery.maxThumbnails {
+            for (index, _) in self.appDelegate.thumbNails.enumerate() {
+                print("imagesarray count \(imagesarray.count) = self.appDelegate.thumbNailscount \(self.appDelegate.thumbNails.count)")
+                imagesarray[index].image = self.appDelegate.thumbNails[index]
+            }
+            tnGallery.viewallButton.alpha = 0
+        }else {
+            tnGallery.viewallButton.alpha = 1
+
+            imagesarray[imagesarray.count - 2].image = self.appDelegate.thumbNails[self.appDelegate.thumbNails.count - 2]
+            imagesarray[imagesarray.count - 1].image = self.appDelegate.thumbNails[self.appDelegate.thumbNails.count - 1]
+        }
+    }
+    
     func removeImage(sender: NSNotification){
         print("remove from camera vc")
+        
+        appDelegate.thumbNails.removeObject((sender.object as! ThumbnailImageView).image!)
+        NSNotificationCenter.defaultCenter().postNotificationName("imageRemoved2", object: sender.object)
+        //FIXME: need to update properly when removing
+        updateGallery()
     }
     
     func processMotion() {

@@ -18,7 +18,15 @@ extension Array where Element : Equatable {
         } else {
             return nil
         }
-        
+    }
+    
+    mutating func removeImage(object: Generator.Element) -> Int? {
+        if let index = self.indexOf(object) {
+            (self[index] as! ThumbnailImageView).image = nil
+            return index
+        } else {
+            return nil
+        }
     }
 }
 

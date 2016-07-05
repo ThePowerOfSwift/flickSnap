@@ -28,14 +28,13 @@ class ThumbnailGalleryView: UIView {
             thumbnailGalleryImageViewArray.append(imageView)
         }
         
-        
         viewallButton.translatesAutoresizingMaskIntoConstraints = false
         viewallButton.addTarget(self, action: #selector(self.viewallButtonTapped(_:)), forControlEvents: UIControlEvents.TouchUpInside)
         viewallButton.setTitle("View All", forState: UIControlState.Normal)
         viewallButton.alpha = 0
         addSubview(viewallButton)
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.removeImage(_:)), name: "imageRemoved", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.removeImage(_:)), name: "imageRemoved2", object: nil)
     }
     
     override func layoutSubviews() {
@@ -83,6 +82,7 @@ class ThumbnailGalleryView: UIView {
     
     func removeImage(sender: NSNotification){
         print("remove from gallery")
+        thumbnailGalleryImageViewArray.removeImage(sender.object as! ThumbnailImageView)   
     }
     
 }
